@@ -1,0 +1,57 @@
+{
+  "annotations": {
+    "changelogDate": "20260318092922"
+  },
+  "applications": "*",
+  "clientRootFolder": "stnBackend",
+  "databaseType": "sql",
+  "documentation": "Supplément tarifaire (S1 à S10 + Veille Sécurité)",
+  "dto": "mapstruct",
+  "fields": [
+    {
+      "fieldName": "code",
+      "fieldType": "String",
+      "fieldValidateRules": ["required", "unique", "maxlength"],
+      "fieldValidateRulesMaxlength": "10"
+    },
+    {
+      "fieldName": "libelle",
+      "fieldType": "String",
+      "fieldValidateRules": ["required", "maxlength"],
+      "fieldValidateRulesMaxlength": "300"
+    },
+    {
+      "fieldName": "type",
+      "fieldType": "TypeSupplement",
+      "fieldValidateRules": ["required"],
+      "fieldValues": "S1_DUREE_SUP_2H,S2_SANS_MACHINE,S3_RADE_EXTERIEURE,S4_DEPLACEMENT_INUTILE,S5_MIDI_12H_14H,S6_NUIT_18H_08H,S7_DIMANCHE_FERIE,S8_QUATRE_REMORQUEURS,S9_REMORQUE_PORT,S10_REMORQUE_RADE"
+    },
+    {
+      "documentation": "ex: 50.0 pour +50%",
+      "fieldName": "tauxPourcentage",
+      "fieldType": "Double",
+      "fieldValidateRules": ["min", "max"],
+      "fieldValidateRulesMax": "200",
+      "fieldValidateRulesMin": "0"
+    },
+    {
+      "documentation": "ex: 146.0 € pour S9",
+      "fieldName": "montantFixe",
+      "fieldType": "Double",
+      "fieldValidateRules": ["min"],
+      "fieldValidateRulesMin": "0"
+    },
+    {
+      "fieldName": "actif",
+      "fieldType": "Boolean",
+      "fieldValidateRules": ["required"]
+    }
+  ],
+  "jpaMetamodelFiltering": true,
+  "microserviceName": "stnBackend",
+  "name": "Supplement",
+  "pagination": "pagination",
+  "relationships": [],
+  "searchEngine": "no",
+  "service": "serviceImpl"
+}

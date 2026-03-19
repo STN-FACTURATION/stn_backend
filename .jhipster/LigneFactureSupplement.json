@@ -1,0 +1,48 @@
+{
+  "annotations": {
+    "changelogDate": "20260318092924"
+  },
+  "applications": "*",
+  "clientRootFolder": "stnBackend",
+  "databaseType": "sql",
+  "documentation": "Ligne de supplément appliqué à une facture",
+  "dto": "mapstruct",
+  "fields": [
+    {
+      "fieldName": "montantCalcule",
+      "fieldType": "Double",
+      "fieldValidateRules": ["required", "min"],
+      "fieldValidateRulesMin": "0"
+    },
+    {
+      "fieldName": "description",
+      "fieldType": "String",
+      "fieldValidateRules": ["maxlength"],
+      "fieldValidateRulesMaxlength": "300"
+    }
+  ],
+  "jpaMetamodelFiltering": true,
+  "microserviceName": "stnBackend",
+  "name": "LigneFactureSupplement",
+  "pagination": "pagination",
+  "relationships": [
+    {
+      "otherEntityField": "libelle",
+      "otherEntityName": "supplement",
+      "relationshipName": "supplement",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-one",
+      "relationshipValidateRules": "required"
+    },
+    {
+      "otherEntityName": "facture",
+      "otherEntityRelationshipName": "supplements",
+      "relationshipName": "facture",
+      "relationshipSide": "right",
+      "relationshipType": "many-to-one",
+      "relationshipValidateRules": "required"
+    }
+  ],
+  "searchEngine": "no",
+  "service": "serviceImpl"
+}

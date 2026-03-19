@@ -1,0 +1,172 @@
+/**
+ * STN - Application Web de Facturation
+ * Port de Dakar - JHipster Domain Language (JDL)
+ */
+
+// ─────────────────────────────────────────────
+// ENUMERATIONS
+// ─────────────────────────────────────────────
+
+enum Role {
+    ADMIN,
+    AGENT_FACTURATION
+}
+
+enum StatutFacture {
+    BROUILLON,
+    VALIDEE,
+    PAYEE,
+    IMPAYEE
+}
+
+enum TypeSupplement {
+    S1_DUREE_SUP_2H,
+    S2_SANS_MACHINE,
+    S3_RADE_EXTERIEURE,
+    S4_DEPLACEMENT_INUTILE,
+    S5_MIDI_12H_14H,
+    S6_NUIT_18H_08H,
+    S7_DIMANCHE_FERIE,
+    S8_QUATRE_REMORQUEURS,
+    S9_REMORQUE_PORT,
+    S10_REMORQUE_RADE
+}
+
+enum DeviseFacture {
+    EUR,
+    XOF
+}
+
+// ─────────────────────────────────────────────
+// ENTITIES
+// ─────────────────────────────────────────────
+
+
+/** Client (armateur, consignataire) */
+entity Client {
+    numero      String          required unique maxlength(20)
+    nom         String          required maxlength(200)
+    adresse     String          maxlength(500)
+    email       String          maxlength(254) pattern(/^[^@\s]+@[^@\s]+\.[^@\s]+$/)
+    telephone   String          maxlength(20)
+    ville       String          maxlength(100)
+    pays        String          maxlength(100)
+    actif       Boolean         required
+}
+
+/** Navire appartenant à un client */
+entity Navire {
+    nom             String      required maxlength(200)
+    numeroImo       String      maxlength(20)
+    jaugeBrute      Double      required min(0)
+    longueur        Double      min(0)
+    largeur         Double      min(0)
+    tirant          Double      min(0)
+    pavillon        String      maxlength(100)
+    actif           Boolean     required
+}
+
+/** Tranche tarifaire du barème Port de Dakar */
+entity Tarif {
+    trancheMin      Double      required min(0)
+    trancheMax      Double      min(0)     /** null = illimité (100 000 m³ et au-delà) */
+    prixEuro        Double      required min(0)
+    actif           Boolean     required
+    dateDebut       LocalDate   required
+    dateFin         LocalDate
+    description     String      maxlength(300)
+}
+
+/** Supplément tarifaire (S1 à S10 + Veille Sécurité) */
+entity Supplement {
+    code            String              required unique maxlength(10)
+    libelle         String              required maxlength(300)
+    type            TypeSupplement      required
+    tauxPourcentage Double              min(0) max(200)   /** ex: 50.0 pour +50% */
+    montantFixe     Double              min(0)            /** ex: 146.0 € pour S9 */
+    actif           Boolean             required
+}
+
+/** Facture principale */
+entity Facture {
+    numero              String          required unique maxlength(50)
+    dateEmission        LocalDate       required
+    datePaiement        LocalDate
+    volumeM3            Double          required min(0)
+    montantBaseHt       Double          required min(0)
+    montantSupplementsHt Double         required min(0)
+    montantHt           Double          required min(0)
+    tauxTva             Double          required min(0) max(100)
+    montantTva          Double          required min(0)
+    montantTtc          Double          required min(0)
+    devise              DeviseFacture   required
+    tauxChangeCfa       Double          min(0)            /** taux EUR→XOF si devise=XOF */
+    statut              StatutFacture   required
+    notes               String          maxlength(1000)
+    cheminPdf           String          maxlength(500)
+    creeParLogin    String    maxlength(50)   /** login de l'utilisateur connecté */
+
+}
+
+/** Ligne de supplément appliqué à une facture */
+entity LigneFactureSupplement {
+    montantCalcule      Double          required min(0)
+    description         String          maxlength(300)
+}
+
+/** Historique des modifications de tarifs */
+entity HistoriqueTarif {
+    ancienneValeur      Double          required
+    nouvelleValeur      Double          required
+    dateModification    Instant         required
+    commentaire         String          maxlength(500)
+    modifieParLogin String    maxlength(50)
+}
+
+// ─────────────────────────────────────────────
+// RELATIONSHIPS
+// ─────────────────────────────────────────────
+
+/** Un client possède plusieurs navires */
+relationship OneToMany {
+    Client{navires} to Navire{client(nom) required}
+}
+
+/** Un client reçoit plusieurs factures */
+relationship OneToMany {
+    Client{factures} to Facture{client(nom) required}
+}
+
+/** Un navire est associé à plusieurs factures */
+relationship ManyToOne {
+    Facture{navire(nom) required} to Navire
+}
+
+
+/** Un tarif a un historique de modifications */
+relationship OneToMany {
+    Tarif{historiques} to HistoriqueTarif{tarif required}
+}
+
+
+/** Une facture contient plusieurs lignes de supplément */
+relationship OneToMany {
+    Facture{supplements} to LigneFactureSupplement{facture required}
+}
+
+/** Un supplément peut apparaître dans plusieurs lignes de facture */
+relationship ManyToOne {
+    LigneFactureSupplement{supplement(libelle) required} to Supplement
+}
+
+// ─────────────────────────────────────────────
+// OPTIONS DE GÉNÉRATION
+// ─────────────────────────────────────────────
+
+dto * with mapstruct
+service * with serviceImpl
+filter *
+paginate * with pagination
+
+
+

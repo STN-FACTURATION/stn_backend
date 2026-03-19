@@ -1,0 +1,66 @@
+{
+  "annotations": {
+    "changelogDate": "20260318092921"
+  },
+  "applications": "*",
+  "clientRootFolder": "stnBackend",
+  "databaseType": "sql",
+  "documentation": "Tranche tarifaire du barème Port de Dakar",
+  "dto": "mapstruct",
+  "fields": [
+    {
+      "fieldName": "trancheMin",
+      "fieldType": "Double",
+      "fieldValidateRules": ["required", "min"],
+      "fieldValidateRulesMin": "0"
+    },
+    {
+      "documentation": "null = illimité (100 000 m³ et au-delà)",
+      "fieldName": "trancheMax",
+      "fieldType": "Double",
+      "fieldValidateRules": ["min"],
+      "fieldValidateRulesMin": "0"
+    },
+    {
+      "fieldName": "prixEuro",
+      "fieldType": "Double",
+      "fieldValidateRules": ["required", "min"],
+      "fieldValidateRulesMin": "0"
+    },
+    {
+      "fieldName": "actif",
+      "fieldType": "Boolean",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "dateDebut",
+      "fieldType": "LocalDate",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "dateFin",
+      "fieldType": "LocalDate"
+    },
+    {
+      "fieldName": "description",
+      "fieldType": "String",
+      "fieldValidateRules": ["maxlength"],
+      "fieldValidateRulesMaxlength": "300"
+    }
+  ],
+  "jpaMetamodelFiltering": true,
+  "microserviceName": "stnBackend",
+  "name": "Tarif",
+  "pagination": "pagination",
+  "relationships": [
+    {
+      "otherEntityName": "historiqueTarif",
+      "otherEntityRelationshipName": "tarif",
+      "relationshipName": "historiques",
+      "relationshipSide": "left",
+      "relationshipType": "one-to-many"
+    }
+  ],
+  "searchEngine": "no",
+  "service": "serviceImpl"
+}

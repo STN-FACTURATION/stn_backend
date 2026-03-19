@@ -1,0 +1,55 @@
+{
+  "annotations": {
+    "changelogDate": "20260318092925"
+  },
+  "applications": "*",
+  "clientRootFolder": "stnBackend",
+  "databaseType": "sql",
+  "documentation": "Historique des modifications de tarifs",
+  "dto": "mapstruct",
+  "fields": [
+    {
+      "fieldName": "ancienneValeur",
+      "fieldType": "Double",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "nouvelleValeur",
+      "fieldType": "Double",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "dateModification",
+      "fieldType": "Instant",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "commentaire",
+      "fieldType": "String",
+      "fieldValidateRules": ["maxlength"],
+      "fieldValidateRulesMaxlength": "500"
+    },
+    {
+      "fieldName": "modifieParLogin",
+      "fieldType": "String",
+      "fieldValidateRules": ["maxlength"],
+      "fieldValidateRulesMaxlength": "50"
+    }
+  ],
+  "jpaMetamodelFiltering": true,
+  "microserviceName": "stnBackend",
+  "name": "HistoriqueTarif",
+  "pagination": "pagination",
+  "relationships": [
+    {
+      "otherEntityName": "tarif",
+      "otherEntityRelationshipName": "historiques",
+      "relationshipName": "tarif",
+      "relationshipSide": "right",
+      "relationshipType": "many-to-one",
+      "relationshipValidateRules": "required"
+    }
+  ],
+  "searchEngine": "no",
+  "service": "serviceImpl"
+}

@@ -1,0 +1,82 @@
+{
+  "annotations": {
+    "changelogDate": "20260318092919"
+  },
+  "applications": "*",
+  "clientRootFolder": "stnBackend",
+  "databaseType": "sql",
+  "documentation": "Client (armateur, consignataire)",
+  "dto": "mapstruct",
+  "fields": [
+    {
+      "fieldName": "numero",
+      "fieldType": "String",
+      "fieldValidateRules": ["required", "unique", "maxlength"],
+      "fieldValidateRulesMaxlength": "20"
+    },
+    {
+      "fieldName": "nom",
+      "fieldType": "String",
+      "fieldValidateRules": ["required", "maxlength"],
+      "fieldValidateRulesMaxlength": "200"
+    },
+    {
+      "fieldName": "adresse",
+      "fieldType": "String",
+      "fieldValidateRules": ["maxlength"],
+      "fieldValidateRulesMaxlength": "500"
+    },
+    {
+      "fieldName": "email",
+      "fieldType": "String",
+      "fieldValidateRules": ["maxlength", "pattern"],
+      "fieldValidateRulesMaxlength": "254",
+      "fieldValidateRulesPattern": "^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$"
+    },
+    {
+      "fieldName": "telephone",
+      "fieldType": "String",
+      "fieldValidateRules": ["maxlength"],
+      "fieldValidateRulesMaxlength": "20"
+    },
+    {
+      "fieldName": "ville",
+      "fieldType": "String",
+      "fieldValidateRules": ["maxlength"],
+      "fieldValidateRulesMaxlength": "100"
+    },
+    {
+      "fieldName": "pays",
+      "fieldType": "String",
+      "fieldValidateRules": ["maxlength"],
+      "fieldValidateRulesMaxlength": "100"
+    },
+    {
+      "fieldName": "actif",
+      "fieldType": "Boolean",
+      "fieldValidateRules": ["required"]
+    }
+  ],
+  "jpaMetamodelFiltering": true,
+  "microserviceName": "stnBackend",
+  "name": "Client",
+  "pagination": "pagination",
+  "relationships": [
+    {
+      "otherEntityName": "navire",
+      "otherEntityRelationshipName": "client",
+      "relationshipName": "navires",
+      "relationshipSide": "left",
+      "relationshipType": "one-to-many"
+    },
+    {
+      "otherEntityName": "facture",
+      "otherEntityRelationshipName": "client",
+      "relationshipName": "factures",
+      "relationshipSide": "left",
+      "relationshipType": "one-to-many"
+    }
+  ],
+  "searchEngine": "no",
+  "service": "serviceImpl"
+}

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+    <!--
+        Added the constraints for entity LigneFactureSupplement.
+    -->
+    <changeSet id="20260318092924-2" author="jhipster">
+
+        <addForeignKeyConstraint baseColumnNames="supplement_id"
+                                 baseTableName="ligne_facture_supplement"
+                                 constraintName="fk_ligne_facture_supplement__supplement_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="supplement"
+                                 />
+
+        <addForeignKeyConstraint baseColumnNames="facture_id"
+                                 baseTableName="ligne_facture_supplement"
+                                 constraintName="fk_ligne_facture_supplement__facture_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="facture"
+                                 />
+    </changeSet>
+</databaseChangeLog>

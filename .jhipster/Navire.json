@@ -1,0 +1,76 @@
+{
+  "annotations": {
+    "changelogDate": "20260318092920"
+  },
+  "applications": "*",
+  "clientRootFolder": "stnBackend",
+  "databaseType": "sql",
+  "documentation": "Navire appartenant à un client",
+  "dto": "mapstruct",
+  "fields": [
+    {
+      "fieldName": "nom",
+      "fieldType": "String",
+      "fieldValidateRules": ["required", "maxlength"],
+      "fieldValidateRulesMaxlength": "200"
+    },
+    {
+      "fieldName": "numeroImo",
+      "fieldType": "String",
+      "fieldValidateRules": ["maxlength"],
+      "fieldValidateRulesMaxlength": "20"
+    },
+    {
+      "fieldName": "jaugeBrute",
+      "fieldType": "Double",
+      "fieldValidateRules": ["required", "min"],
+      "fieldValidateRulesMin": "0"
+    },
+    {
+      "fieldName": "longueur",
+      "fieldType": "Double",
+      "fieldValidateRules": ["min"],
+      "fieldValidateRulesMin": "0"
+    },
+    {
+      "fieldName": "largeur",
+      "fieldType": "Double",
+      "fieldValidateRules": ["min"],
+      "fieldValidateRulesMin": "0"
+    },
+    {
+      "fieldName": "tirant",
+      "fieldType": "Double",
+      "fieldValidateRules": ["min"],
+      "fieldValidateRulesMin": "0"
+    },
+    {
+      "fieldName": "pavillon",
+      "fieldType": "String",
+      "fieldValidateRules": ["maxlength"],
+      "fieldValidateRulesMaxlength": "100"
+    },
+    {
+      "fieldName": "actif",
+      "fieldType": "Boolean",
+      "fieldValidateRules": ["required"]
+    }
+  ],
+  "jpaMetamodelFiltering": true,
+  "microserviceName": "stnBackend",
+  "name": "Navire",
+  "pagination": "pagination",
+  "relationships": [
+    {
+      "otherEntityField": "nom",
+      "otherEntityName": "client",
+      "otherEntityRelationshipName": "navires",
+      "relationshipName": "client",
+      "relationshipSide": "right",
+      "relationshipType": "many-to-one",
+      "relationshipValidateRules": "required"
+    }
+  ],
+  "searchEngine": "no",
+  "service": "serviceImpl"
+}

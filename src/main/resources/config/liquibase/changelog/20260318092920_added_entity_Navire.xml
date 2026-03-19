@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <!--
+        Added the entity Navire.
+    -->
+    <changeSet id="20260318092920-1" author="jhipster">
+        <createTable tableName="navire" remarks="Navire appartenant à un client">
+            <column name="id" type="bigint" autoIncrement="true" startWith="1500">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="nom" type="varchar(200)">
+                <constraints nullable="false" />
+            </column>
+            <column name="numero_imo" type="varchar(20)">
+                <constraints nullable="true" />
+            </column>
+            <column name="jauge_brute" type="double">
+                <constraints nullable="false" />
+            </column>
+            <column name="longueur" type="double">
+                <constraints nullable="true" />
+            </column>
+            <column name="largeur" type="double">
+                <constraints nullable="true" />
+            </column>
+            <column name="tirant" type="double">
+                <constraints nullable="true" />
+            </column>
+            <column name="pavillon" type="varchar(100)">
+                <constraints nullable="true" />
+            </column>
+            <column name="actif" type="boolean">
+                <constraints nullable="false" />
+            </column>
+            <column name="client_id" type="bigint">
+                <constraints nullable="false" />
+            </column>
+            <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here -->
+        </createTable>
+    </changeSet>
+
+    <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here -->
+
+    <!--
+        Load sample data generated with Faker.js
+        - This data can be easily edited using a CSV editor (or even MS Excel) and
+          is located in the 'src/main/resources/config/liquibase/fake-data' directory
+        - By default this data is applied when running with the JHipster 'dev' profile.
+          This can be customized by adding or removing 'faker' in the 'spring.liquibase.contexts'
+          Spring Boot configuration key.
+    -->
+    <changeSet id="20260318092920-1-data" author="jhipster" context="faker">
+        <loadData
+                  file="config/liquibase/fake-data/navire.csv"
+                  separator=";"
+                  tableName="navire"
+                  usePreparedStatements="true">
+            <column name="id" type="numeric"/>
+            <column name="nom" type="string"/>
+            <column name="numero_imo" type="string"/>
+            <column name="jauge_brute" type="numeric"/>
+            <column name="longueur" type="numeric"/>
+            <column name="largeur" type="numeric"/>
+            <column name="tirant" type="numeric"/>
+            <column name="pavillon" type="string"/>
+            <column name="actif" type="boolean"/>
+            <column name="client_id" type="numeric"/>
+            <!-- jhipster-needle-liquibase-add-loadcolumn - JHipster (and/or extensions) can add load columns here -->
+        </loadData>
+    </changeSet>
+</databaseChangeLog>
