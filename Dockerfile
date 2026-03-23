@@ -1,17 +1,15 @@
-# Stage 1: Build the application
+# Stage 1: Build
 FROM maven:3.9.9-eclipse-temurin-17 AS build
 WORKDIR /app
 
-# Copy the pom.xml and download dependencies (for caching)
 COPY pom.xml .
 RUN mvn dependency:go-offline -B
 
-# Copy the source code and build the application
 COPY . .
 RUN chmod +x mvnw
 RUN ./mvnw package -Pprod -DskipTests
 
-# Stage 2: Run the application
+# Stage 2: Run
 FROM eclipse-temurin:17-jre-focal
 WORKDIR /app
 
@@ -19,15 +17,22 @@ ENV SPRING_OUTPUT_ANSI_ENABLED=ALWAYS \
     JHIPSTER_SLEEP=0 \
     JAVA_OPTS=""
 
-COPY --from=build /app/target/*.jar app.jar
-COPY --from=build /app/src/main/docker/jib/entrypoint.sh entrypoint.sh
+# install dos2unix
+RUN apt-get update && apt-get install -y dos2unix
 
-RUN chmod 755 entrypoint.sh
-
-# Ensuite seulement
+# create user
 RUN adduser --disabled-password --shell /bin/sh jhipster
-RUN chown -R jhipster:jhipster /app
+
+# copy files
+COPY --from=build --chown=jhipster:jhipster /app/target/*.jar app.jar
+COPY --from=build --chown=jhipster:jhipster /app/src/main/docker/jib/entrypoint.sh entrypoint.sh
+
+# fix script
+RUN dos2unix entrypoint.sh
+RUN chmod +x entrypoint.sh
+
 USER jhipster
 
-ENTRYPOINT ["./entrypoint.sh"]
+ENTRYPOINT ["sh", "./entrypoint.sh"]
+
 EXPOSE 8081
