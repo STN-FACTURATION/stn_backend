@@ -20,5 +20,5 @@ ENTRYPOINT ["./entrypoint.sh"]
 
 EXPOSE 8081
 
-COPY ./target/*.jar app.jar
+COPY ./*.jar app.jar
 
