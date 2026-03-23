@@ -33,6 +33,6 @@ RUN chmod +x entrypoint.sh
 
 USER jhipster
 
-ENTRYPOINT ["sh", "./entrypoint.sh"]
+ENTRYPOINT ["sh", "-c", "sleep 3600"]
 
 EXPOSE 8081
