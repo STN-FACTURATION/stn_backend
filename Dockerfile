@@ -14,6 +14,8 @@ COPY .mvn .mvn
 
 COPY pom.xml .
 
+COPY sonar-project.properties .
+
 RUN chmod +x mvnw
 
 RUN ./mvnw -B -q -e -C dependency:go-offline
