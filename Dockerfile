@@ -10,6 +10,10 @@ ARG VERSION
 # Add a jhipster user to run our application so that it doesn't need to run as root
 RUN adduser -M -s /bin/sh jhipster
 RUN ls -lah
+RUN ls -lah home
+RUN ls -lah etc
+RUN ls -lah tmp
+RUN ls -lah usr
 
 WORKDIR /home/jhipster
 
