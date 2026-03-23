@@ -9,6 +9,8 @@ ARG VERSION
 
 # Add a jhipster user to run our application so that it doesn't need to run as root
 RUN adduser -M -s /bin/sh jhipster
+RUN ls -lah
+
 WORKDIR /home/jhipster
 
 
@@ -16,7 +18,6 @@ COPY entrypoint.sh entrypoint.sh
 RUN chmod 755 entrypoint.sh && chown jhipster:jhipster entrypoint.sh
 USER jhipster
 
-RUN ls -lah
 ENTRYPOINT ["./entrypoint.sh"]
 
 EXPOSE 8081
