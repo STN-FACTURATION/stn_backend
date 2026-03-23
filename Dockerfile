@@ -1,38 +1,24 @@
-# Stage 1: Build
-FROM maven:3.9.9-eclipse-temurin-17 AS build
-WORKDIR /app
-
-COPY pom.xml .
-RUN mvn dependency:go-offline -B
-
-COPY . .
-RUN chmod +x mvnw
-RUN ./mvnw package -Pprod -DskipTests
-
-# Stage 2: Run
-FROM eclipse-temurin:17-jre-focal
-WORKDIR /app
+FROM eclipse-temurin:21-jre-ubi9-minimal
 
 ENV SPRING_OUTPUT_ANSI_ENABLED=ALWAYS \
     JHIPSTER_SLEEP=0 \
     JAVA_OPTS=""
 
-# install dos2unix
-RUN apt-get update && apt-get install -y dos2unix
+ARG APP_NAME
+ARG VERSION
 
-# create user
-RUN adduser --disabled-password --shell /bin/sh jhipster
+# Add a jhipster user to run our application so that it doesn't need to run as root
+RUN adduser -M -s /bin/sh jhipster
+WORKDIR /home/jhipster
 
-# copy files
-COPY --from=build --chown=jhipster:jhipster /app/target/*.jar app.jar
-COPY --from=build --chown=jhipster:jhipster /app/src/main/docker/jib/entrypoint.sh entrypoint.sh
 
-# fix script
-RUN dos2unix entrypoint.sh
-RUN chmod +x entrypoint.sh
-
+COPY entrypoint.sh entrypoint.sh
+RUN chmod 755 entrypoint.sh && chown jhipster:jhipster entrypoint.sh
 USER jhipster
 
-ENTRYPOINT ["sh", "-c", "sleep 3600"]
+ENTRYPOINT ["./entrypoint.sh"]
 
 EXPOSE 8081
+
+COPY ./target/*.jar app.jar
+
