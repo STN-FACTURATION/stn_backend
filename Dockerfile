@@ -16,6 +16,7 @@ COPY entrypoint.sh entrypoint.sh
 RUN chmod 755 entrypoint.sh && chown jhipster:jhipster entrypoint.sh
 USER jhipster
 
+RUN ls -lah
 ENTRYPOINT ["./entrypoint.sh"]
 
 EXPOSE 8081
