@@ -8,19 +8,9 @@ FROM eclipse-temurin:21-jdk-ubi9-minimal AS builder
 
 WORKDIR /build
 
-COPY mvnw .
-
-COPY .mvn .mvn
-
-COPY pom.xml .
-
-COPY sonar-project.properties .
+COPY . .
 
 RUN chmod +x mvnw
-
-RUN ./mvnw -B -q -e -C dependency:go-offline
-
-COPY src ./src
 
 RUN ./mvnw -B -Pprod -DskipTests clean package
 
