@@ -3,6 +3,12 @@
 # In prod profile, properties will be overwritten by the ones defined in bootstrap-prod.yml
 # ===================================================================
 
+logging:
+  level:
+    org.springframework.cloud.consul: DEBUG
+    org.springframework.cloud.bootstrap.config: DEBUG
+    org.springframework.boot.context.config: DEBUG
+
 spring:
   application:
     name: stnBackend
