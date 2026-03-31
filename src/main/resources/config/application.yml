@@ -95,26 +95,9 @@ management:
       repository:
         autotime:
           enabled: true
-    tags:
-      application: ${spring.application.name}
+
 
 spring:
-  application:
-    name: stnBackend
-  cloud:
-    consul:
-      discovery:
-        healthCheckPath: /management/health
-        instanceId: stnbackend:${spring.application.instance-id:${random.value}}
-        service-name: stnbackend
-      config:
-        watch:
-          enabled: false
-  docker:
-    compose:
-      enabled: false
-      lifecycle-management: start-only
-      file: src/main/docker/mysql.yml
   profiles:
     # The commented value for `active` can be replaced with valid Spring profiles to load.
     # Otherwise, it will be filled in by maven when building the JAR file
