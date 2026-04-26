@@ -112,7 +112,7 @@ public class Facture implements Serializable {
     @JsonIgnoreProperties(value = { "remorqueur", "facture" }, allowSetters = true)
     private Set<Mouvement> mouvements = new HashSet<>();
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "facture")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "facture", cascade = CascadeType.ALL, orphanRemoval = true)
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @JsonIgnoreProperties(value = { "supplement", "facture" }, allowSetters = true)
     private Set<LigneFactureSupplement> supplements = new HashSet<>();

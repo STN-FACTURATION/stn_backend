@@ -9,10 +9,16 @@ import sn.stn.facturation.domain.Navire;
 import sn.stn.facturation.domain.Tarif;
 import sn.stn.facturation.domain.enumeration.TypeOperation;
 import sn.stn.facturation.repository.TarifRepository;
+import sn.stn.facturation.domain.LigneFactureSupplement;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 @Transactional
 public class BillingService {
+
+    private final Logger log = LoggerFactory.getLogger(BillingService.class);
 
     private final TarifRepository tarifRepository;
 
@@ -90,19 +96,28 @@ public class BillingService {
      * Recalcule tous les totaux d'une facture
      */
     public void recalculateTotals(Facture facture) {
+        log.info("Recalculating totals for facture: {}, movements size: {}, supplements size: {}",
+                facture.getNumero(),
+                facture.getMouvements() != null ? facture.getMouvements().size() : "null",
+                facture.getSupplements() != null ? facture.getSupplements().size() : "null");
+
         double totalMouvements = 0.0;
-        if (facture.getMouvements() != null) {
+        if (facture.getMouvements() != null && !facture.getMouvements().isEmpty()) {
             totalMouvements = facture.getMouvements().stream()
-                    .mapToDouble(m -> m.getMontantCalcule() != null ? m.getMontantCalcule() : 0.0)
+                    .filter(m -> m.getMontantCalcule() != null)
+                    .mapToDouble(Mouvement::getMontantCalcule)
                     .sum();
         }
 
         double totalSupplements = 0.0;
-        if (facture.getSupplements() != null) {
+        if (facture.getSupplements() != null && !facture.getSupplements().isEmpty()) {
             totalSupplements = facture.getSupplements().stream()
-                    .mapToDouble(s -> s.getMontantCalcule() != null ? s.getMontantCalcule() : 0.0)
+                    .filter(s -> s.getMontantCalcule() != null)
+                    .mapToDouble(LigneFactureSupplement::getMontantCalcule)
                     .sum();
         }
+
+        log.info("Total Mouvements: {}, Total Supplements: {}", totalMouvements, totalSupplements);
 
         double baseTarif = 0.0;
         if (facture.getNavire() != null && facture.getNavire().getJaugeBrute() != null) {

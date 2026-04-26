@@ -16,6 +16,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import sn.stn.facturation.domain.enumeration.StatutFacture;
 import sn.stn.facturation.repository.FactureRepository;
 import sn.stn.facturation.service.FactureQueryService;
 import sn.stn.facturation.service.FactureService;
@@ -35,7 +36,7 @@ public class FactureResource {
 
     private static final Logger LOG = LoggerFactory.getLogger(FactureResource.class);
 
-    private static final String ENTITY_NAME = "stnBackendFacture";
+    private static final String ENTITY_NAME = "facture";
 
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
@@ -46,7 +47,8 @@ public class FactureResource {
 
     private final FactureQueryService factureQueryService;
 
-    public FactureResource(FactureService factureService, FactureRepository factureRepository, FactureQueryService factureQueryService) {
+    public FactureResource(FactureService factureService, FactureRepository factureRepository,
+            FactureQueryService factureQueryService) {
         this.factureService = factureService;
         this.factureRepository = factureRepository;
         this.factureQueryService = factureQueryService;
@@ -56,36 +58,42 @@ public class FactureResource {
      * {@code POST  /factures} : Create a new facture.
      *
      * @param factureDTO the factureDTO to create.
-     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new factureDTO, or with status {@code 400 (Bad Request)} if the facture has already an ID.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with
+     *         body the new factureDTO, or with status {@code 400 (Bad Request)} if
+     *         the facture has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("")
-    public ResponseEntity<FactureDTO> createFacture(@Valid @RequestBody FactureDTO factureDTO) throws URISyntaxException {
+    public ResponseEntity<FactureDTO> createFacture(@Valid @RequestBody FactureDTO factureDTO)
+            throws URISyntaxException {
         LOG.debug("REST request to save Facture : {}", factureDTO);
         if (factureDTO.getId() != null) {
             throw new BadRequestAlertException("A new facture cannot already have an ID", ENTITY_NAME, "idexists");
         }
         factureDTO = factureService.save(factureDTO);
         return ResponseEntity.created(new URI("/api/factures/" + factureDTO.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, factureDTO.getId().toString()))
-            .body(factureDTO);
+                .headers(HeaderUtil.createEntityCreationAlert("stnGatewayApp", true, ENTITY_NAME,
+                        factureDTO.getId().toString()))
+                .body(factureDTO);
     }
 
     /**
      * {@code PUT  /factures/:id} : Updates an existing facture.
      *
-     * @param id the id of the factureDTO to save.
+     * @param id         the id of the factureDTO to save.
      * @param factureDTO the factureDTO to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated factureDTO,
-     * or with status {@code 400 (Bad Request)} if the factureDTO is not valid,
-     * or with status {@code 500 (Internal Server Error)} if the factureDTO couldn't be updated.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body
+     *         the updated factureDTO,
+     *         or with status {@code 400 (Bad Request)} if the factureDTO is not
+     *         valid,
+     *         or with status {@code 500 (Internal Server Error)} if the factureDTO
+     *         couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/{id}")
     public ResponseEntity<FactureDTO> updateFacture(
-        @PathVariable(value = "id", required = false) final Long id,
-        @Valid @RequestBody FactureDTO factureDTO
-    ) throws URISyntaxException {
+            @PathVariable(value = "id", required = false) final Long id,
+            @Valid @RequestBody FactureDTO factureDTO) throws URISyntaxException {
         LOG.debug("REST request to update Facture : {}, {}", id, factureDTO);
         if (factureDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
@@ -100,26 +108,31 @@ public class FactureResource {
 
         factureDTO = factureService.update(factureDTO);
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, factureDTO.getId().toString()))
-            .body(factureDTO);
+                .headers(HeaderUtil.createEntityUpdateAlert("stnGatewayApp", true, ENTITY_NAME,
+                        factureDTO.getId().toString()))
+                .body(factureDTO);
     }
 
     /**
-     * {@code PATCH  /factures/:id} : Partial updates given fields of an existing facture, field will ignore if it is null
+     * {@code PATCH  /factures/:id} : Partial updates given fields of an existing
+     * facture, field will ignore if it is null
      *
-     * @param id the id of the factureDTO to save.
+     * @param id         the id of the factureDTO to save.
      * @param factureDTO the factureDTO to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated factureDTO,
-     * or with status {@code 400 (Bad Request)} if the factureDTO is not valid,
-     * or with status {@code 404 (Not Found)} if the factureDTO is not found,
-     * or with status {@code 500 (Internal Server Error)} if the factureDTO couldn't be updated.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body
+     *         the updated factureDTO,
+     *         or with status {@code 400 (Bad Request)} if the factureDTO is not
+     *         valid,
+     *         or with status {@code 404 (Not Found)} if the factureDTO is not
+     *         found,
+     *         or with status {@code 500 (Internal Server Error)} if the factureDTO
+     *         couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
     public ResponseEntity<FactureDTO> partialUpdateFacture(
-        @PathVariable(value = "id", required = false) final Long id,
-        @NotNull @RequestBody FactureDTO factureDTO
-    ) throws URISyntaxException {
+            @PathVariable(value = "id", required = false) final Long id,
+            @NotNull @RequestBody FactureDTO factureDTO) throws URISyntaxException {
         LOG.debug("REST request to partial update Facture partially : {}, {}", id, factureDTO);
         if (factureDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
@@ -135,9 +148,28 @@ public class FactureResource {
         Optional<FactureDTO> result = factureService.partialUpdate(factureDTO);
 
         return ResponseUtil.wrapOrNotFound(
-            result,
-            HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, factureDTO.getId().toString())
-        );
+                result,
+                HeaderUtil.createEntityUpdateAlert("stnGatewayApp", true, ENTITY_NAME, factureDTO.getId().toString()));
+    }
+
+    /**
+     * {@code PUT  /factures/:id/statut} : Updates the status of a given facture.
+     *
+     * @param id        the id of the facture to update.
+     * @param statutStr the new status to apply.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body
+     *         the updated factureDTO,
+     *         or with status {@code 404 (Not Found)}.
+     */
+    @PutMapping("/{id}/statut")
+    public ResponseEntity<FactureDTO> updateFactureStatut(
+            @PathVariable(value = "id", required = true) final Long id,
+            @RequestBody String statutStr) {
+        sn.stn.facturation.domain.enumeration.StatutFacture statut = StatutFacture
+                .valueOf(statutStr.replace("\"", ""));
+        LOG.debug("REST request to update Facture statut : {} to {}", id, statut);
+        Optional<FactureDTO> factureDTO = factureService.updateStatut(id, statut);
+        return ResponseUtil.wrapOrNotFound(factureDTO);
     }
 
     /**
@@ -145,17 +177,18 @@ public class FactureResource {
      *
      * @param pageable the pagination information.
      * @param criteria the criteria which the requested entities should match.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of factures in body.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list
+     *         of factures in body.
      */
     @GetMapping("")
     public ResponseEntity<List<FactureDTO>> getAllFactures(
-        FactureCriteria criteria,
-        @org.springdoc.core.annotations.ParameterObject Pageable pageable
-    ) {
+            FactureCriteria criteria,
+            @org.springdoc.core.annotations.ParameterObject Pageable pageable) {
         LOG.debug("REST request to get Factures by criteria: {}", criteria);
 
         Page<FactureDTO> page = factureQueryService.findByCriteria(criteria, pageable);
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+        HttpHeaders headers = PaginationUtil
+                .generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
@@ -163,7 +196,8 @@ public class FactureResource {
      * {@code GET  /factures/count} : count all the factures.
      *
      * @param criteria the criteria which the requested entities should match.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the count in body.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the count
+     *         in body.
      */
     @GetMapping("/count")
     public ResponseEntity<Long> countFactures(FactureCriteria criteria) {
@@ -175,7 +209,8 @@ public class FactureResource {
      * {@code GET  /factures/:id} : get the "id" facture.
      *
      * @param id the id of the factureDTO to retrieve.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the factureDTO, or with status {@code 404 (Not Found)}.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body
+     *         the factureDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/{id}")
     public ResponseEntity<FactureDTO> getFacture(@PathVariable("id") Long id) {
@@ -195,7 +230,7 @@ public class FactureResource {
         LOG.debug("REST request to delete Facture : {}", id);
         factureService.delete(id);
         return ResponseEntity.noContent()
-            .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
-            .build();
+                .headers(HeaderUtil.createEntityDeletionAlert("stnGatewayApp", true, ENTITY_NAME, id.toString()))
+                .build();
     }
 }

@@ -35,7 +35,7 @@ public class TarifResource {
 
     private static final Logger LOG = LoggerFactory.getLogger(TarifResource.class);
 
-    private static final String ENTITY_NAME = "stnBackendTarif";
+    private static final String ENTITY_NAME = "tarif";
 
     @Value("${jhipster.clientApp.name}")
     private String applicationName;

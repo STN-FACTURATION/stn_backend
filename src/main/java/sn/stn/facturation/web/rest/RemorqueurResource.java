@@ -35,7 +35,7 @@ public class RemorqueurResource {
 
     private static final Logger LOG = LoggerFactory.getLogger(RemorqueurResource.class);
 
-    private static final String ENTITY_NAME = "stnBackendRemorqueur";
+    private static final String ENTITY_NAME = "remorqueur";
 
     @Value("${jhipster.clientApp.name}")
     private String applicationName;

@@ -35,7 +35,7 @@ public class LigneFactureSupplementResource {
 
     private static final Logger LOG = LoggerFactory.getLogger(LigneFactureSupplementResource.class);
 
-    private static final String ENTITY_NAME = "stnBackendLigneFactureSupplement";
+    private static final String ENTITY_NAME = "ligneFactureSupplement";
 
     @Value("${jhipster.clientApp.name}")
     private String applicationName;

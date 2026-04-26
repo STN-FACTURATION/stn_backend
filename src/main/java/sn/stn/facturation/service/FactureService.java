@@ -3,6 +3,7 @@ package sn.stn.facturation.service;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import sn.stn.facturation.domain.enumeration.StatutFacture;
 import sn.stn.facturation.service.dto.FactureDTO;
 
 /**
@@ -32,6 +33,15 @@ public interface FactureService {
      * @return the persisted entity.
      */
     Optional<FactureDTO> partialUpdate(FactureDTO factureDTO);
+
+    /**
+     * Updates the status of a facture.
+     *
+     * @param id     the id of the facture.
+     * @param statut the new status.
+     * @return the updated facture.
+     */
+    Optional<FactureDTO> updateStatut(Long id, StatutFacture statut);
 
     /**
      * Get all the factures with eager load of many-to-many relationships.

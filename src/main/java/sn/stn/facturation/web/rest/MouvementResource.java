@@ -35,7 +35,7 @@ public class MouvementResource {
 
     private static final Logger LOG = LoggerFactory.getLogger(MouvementResource.class);
 
-    private static final String ENTITY_NAME = "stnBackendMouvement";
+    private static final String ENTITY_NAME = "mouvement";
 
     @Value("${jhipster.clientApp.name}")
     private String applicationName;

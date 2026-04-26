@@ -35,7 +35,7 @@ public class SupplementResource {
 
     private static final Logger LOG = LoggerFactory.getLogger(SupplementResource.class);
 
-    private static final String ENTITY_NAME = "stnBackendSupplement";
+    private static final String ENTITY_NAME = "supplement";
 
     @Value("${jhipster.clientApp.name}")
     private String applicationName;

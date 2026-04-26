@@ -80,7 +80,9 @@ public class FactureDTO implements Serializable {
 
     private ClientDTO client;
 
-    private Set<MouvementDTO> mouvements = new HashSet<>();
+    private Set<MouvementDTO> mouvements;
+
+    private Set<LigneFactureSupplementDTO> supplements;
 
     public Long getId() {
         return id;
@@ -242,6 +244,14 @@ public class FactureDTO implements Serializable {
         this.mouvements = mouvements;
     }
 
+    public Set<LigneFactureSupplementDTO> getSupplements() {
+        return supplements;
+    }
+
+    public void setSupplements(Set<LigneFactureSupplementDTO> supplements) {
+        this.supplements = supplements;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -287,6 +297,7 @@ public class FactureDTO implements Serializable {
                 ", navire=" + getNavire() +
                 ", client=" + getClient() +
                 ", mouvements=" + getMouvements() +
+                ", supplements=" + getSupplements() +
                 "}";
     }
 }

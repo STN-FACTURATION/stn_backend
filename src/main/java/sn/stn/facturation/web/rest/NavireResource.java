@@ -35,7 +35,7 @@ public class NavireResource {
 
     private static final Logger LOG = LoggerFactory.getLogger(NavireResource.class);
 
-    private static final String ENTITY_NAME = "stnBackendNavire";
+    private static final String ENTITY_NAME = "navire";
 
     @Value("${jhipster.clientApp.name}")
     private String applicationName;

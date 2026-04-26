@@ -11,7 +11,7 @@ import sn.stn.facturation.service.dto.NavireDTO;
 /**
  * Mapper for the entity {@link Facture} and its DTO {@link FactureDTO}.
  */
-@Mapper(componentModel = "spring", uses = { MouvementMapper.class })
+@Mapper(componentModel = "spring", uses = { MouvementMapper.class, LigneFactureSupplementMapper.class })
 public interface FactureMapper extends EntityMapper<FactureDTO, Facture> {
     @Mapping(target = "mouvements", source = "mouvements")
     FactureDTO toDto(Facture s);
@@ -30,4 +30,5 @@ public interface FactureMapper extends EntityMapper<FactureDTO, Facture> {
     @Mapping(target = "id", source = "id")
     @Mapping(target = "nom", source = "nom")
     ClientDTO toDtoClientNom(Client client);
+
 }

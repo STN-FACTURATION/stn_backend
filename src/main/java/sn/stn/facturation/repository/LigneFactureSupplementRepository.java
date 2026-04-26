@@ -14,7 +14,7 @@ import sn.stn.facturation.domain.LigneFactureSupplement;
  */
 @Repository
 public interface LigneFactureSupplementRepository
-    extends JpaRepository<LigneFactureSupplement, Long>, JpaSpecificationExecutor<LigneFactureSupplement> {
+        extends JpaRepository<LigneFactureSupplement, Long>, JpaSpecificationExecutor<LigneFactureSupplement> {
     default Optional<LigneFactureSupplement> findOneWithEagerRelationships(Long id) {
         return this.findOneWithToOneRelationships(id);
     }
@@ -27,19 +27,14 @@ public interface LigneFactureSupplementRepository
         return this.findAllWithToOneRelationships(pageable);
     }
 
-    @Query(
-        value = "select ligneFactureSupplement from LigneFactureSupplement ligneFactureSupplement left join fetch ligneFactureSupplement.supplement",
-        countQuery = "select count(ligneFactureSupplement) from LigneFactureSupplement ligneFactureSupplement"
-    )
+    @Query(value = "select ligneFactureSupplement from LigneFactureSupplement ligneFactureSupplement left join fetch ligneFactureSupplement.supplement", countQuery = "select count(ligneFactureSupplement) from LigneFactureSupplement ligneFactureSupplement")
     Page<LigneFactureSupplement> findAllWithToOneRelationships(Pageable pageable);
 
-    @Query(
-        "select ligneFactureSupplement from LigneFactureSupplement ligneFactureSupplement left join fetch ligneFactureSupplement.supplement"
-    )
+    @Query("select ligneFactureSupplement from LigneFactureSupplement ligneFactureSupplement left join fetch ligneFactureSupplement.supplement")
     List<LigneFactureSupplement> findAllWithToOneRelationships();
 
-    @Query(
-        "select ligneFactureSupplement from LigneFactureSupplement ligneFactureSupplement left join fetch ligneFactureSupplement.supplement where ligneFactureSupplement.id =:id"
-    )
+    @Query("select ligneFactureSupplement from LigneFactureSupplement ligneFactureSupplement left join fetch ligneFactureSupplement.supplement where ligneFactureSupplement.id =:id")
     Optional<LigneFactureSupplement> findOneWithToOneRelationships(@Param("id") Long id);
+
+    void deleteByFactureId(Long factureId);
 }
