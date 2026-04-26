@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
 import org.hibernate.annotations.Cache;
@@ -34,7 +35,7 @@ public class Facture implements Serializable {
 
     @NotNull
     @Column(name = "date_emission", nullable = false)
-    private LocalDate dateEmission;
+    private Instant dateEmission;
 
     @Column(name = "date_paiement")
     private LocalDate datePaiement;
@@ -154,16 +155,16 @@ public class Facture implements Serializable {
         this.numero = numero;
     }
 
-    public LocalDate getDateEmission() {
+    public Instant getDateEmission() {
         return this.dateEmission;
     }
 
-    public Facture dateEmission(LocalDate dateEmission) {
+    public Facture dateEmission(Instant dateEmission) {
         this.setDateEmission(dateEmission);
         return this;
     }
 
-    public void setDateEmission(LocalDate dateEmission) {
+    public void setDateEmission(Instant dateEmission) {
         this.dateEmission = dateEmission;
     }
 

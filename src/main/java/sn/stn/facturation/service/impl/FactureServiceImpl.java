@@ -61,7 +61,7 @@ public class FactureServiceImpl implements FactureService {
         }
 
         if (facture.getId() == null) {
-            facture.setDateEmission(java.time.LocalDate.now());
+            facture.setDateEmission(java.time.Instant.now());
         }
 
         if (facture.getVolumeM3() == null && facture.getNavire() != null && facture.getNavire().getId() != null) {

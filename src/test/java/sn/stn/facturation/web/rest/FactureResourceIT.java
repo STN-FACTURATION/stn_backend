@@ -10,6 +10,7 @@ import static sn.stn.facturation.web.rest.TestUtil.createUpdateProxyForBean;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityManager;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -52,9 +53,9 @@ class FactureResourceIT {
     private static final String DEFAULT_NUMERO = "AAAAAAAAAA";
     private static final String UPDATED_NUMERO = "BBBBBBBBBB";
 
-    private static final LocalDate DEFAULT_DATE_EMISSION = LocalDate.ofEpochDay(0L);
-    private static final LocalDate UPDATED_DATE_EMISSION = LocalDate.now(ZoneId.systemDefault());
-    private static final LocalDate SMALLER_DATE_EMISSION = LocalDate.ofEpochDay(-1L);
+    private static final Instant DEFAULT_DATE_EMISSION = Instant.ofEpochMilli(0L);
+    private static final Instant UPDATED_DATE_EMISSION = Instant.now();
+    private static final Instant SMALLER_DATE_EMISSION = Instant.ofEpochMilli(-1000L);
 
     private static final LocalDate DEFAULT_DATE_PAIEMENT = LocalDate.ofEpochDay(0L);
     private static final LocalDate UPDATED_DATE_PAIEMENT = LocalDate.now(ZoneId.systemDefault());
@@ -146,22 +147,22 @@ class FactureResourceIT {
      */
     public static Facture createEntity(EntityManager em) {
         Facture facture = new Facture()
-            .numero(DEFAULT_NUMERO)
-            .dateEmission(DEFAULT_DATE_EMISSION)
-            .datePaiement(DEFAULT_DATE_PAIEMENT)
-            .volumeM3(DEFAULT_VOLUME_M_3)
-            .montantBaseHt(DEFAULT_MONTANT_BASE_HT)
-            .montantSupplementsHt(DEFAULT_MONTANT_SUPPLEMENTS_HT)
-            .montantHt(DEFAULT_MONTANT_HT)
-            .tauxTva(DEFAULT_TAUX_TVA)
-            .montantTva(DEFAULT_MONTANT_TVA)
-            .montantTtc(DEFAULT_MONTANT_TTC)
-            .devise(DEFAULT_DEVISE)
-            .tauxChangeCfa(DEFAULT_TAUX_CHANGE_CFA)
-            .statut(DEFAULT_STATUT)
-            .notes(DEFAULT_NOTES)
-            .cheminPdf(DEFAULT_CHEMIN_PDF)
-            .creeParLogin(DEFAULT_CREE_PAR_LOGIN);
+                .numero(DEFAULT_NUMERO)
+                .dateEmission(DEFAULT_DATE_EMISSION)
+                .datePaiement(DEFAULT_DATE_PAIEMENT)
+                .volumeM3(DEFAULT_VOLUME_M_3)
+                .montantBaseHt(DEFAULT_MONTANT_BASE_HT)
+                .montantSupplementsHt(DEFAULT_MONTANT_SUPPLEMENTS_HT)
+                .montantHt(DEFAULT_MONTANT_HT)
+                .tauxTva(DEFAULT_TAUX_TVA)
+                .montantTva(DEFAULT_MONTANT_TVA)
+                .montantTtc(DEFAULT_MONTANT_TTC)
+                .devise(DEFAULT_DEVISE)
+                .tauxChangeCfa(DEFAULT_TAUX_CHANGE_CFA)
+                .statut(DEFAULT_STATUT)
+                .notes(DEFAULT_NOTES)
+                .cheminPdf(DEFAULT_CHEMIN_PDF)
+                .creeParLogin(DEFAULT_CREE_PAR_LOGIN);
         // Add required entity
         Navire navire;
         if (TestUtil.findAll(em, Navire.class).isEmpty()) {
@@ -193,22 +194,22 @@ class FactureResourceIT {
      */
     public static Facture createUpdatedEntity(EntityManager em) {
         Facture updatedFacture = new Facture()
-            .numero(UPDATED_NUMERO)
-            .dateEmission(UPDATED_DATE_EMISSION)
-            .datePaiement(UPDATED_DATE_PAIEMENT)
-            .volumeM3(UPDATED_VOLUME_M_3)
-            .montantBaseHt(UPDATED_MONTANT_BASE_HT)
-            .montantSupplementsHt(UPDATED_MONTANT_SUPPLEMENTS_HT)
-            .montantHt(UPDATED_MONTANT_HT)
-            .tauxTva(UPDATED_TAUX_TVA)
-            .montantTva(UPDATED_MONTANT_TVA)
-            .montantTtc(UPDATED_MONTANT_TTC)
-            .devise(UPDATED_DEVISE)
-            .tauxChangeCfa(UPDATED_TAUX_CHANGE_CFA)
-            .statut(UPDATED_STATUT)
-            .notes(UPDATED_NOTES)
-            .cheminPdf(UPDATED_CHEMIN_PDF)
-            .creeParLogin(UPDATED_CREE_PAR_LOGIN);
+                .numero(UPDATED_NUMERO)
+                .dateEmission(UPDATED_DATE_EMISSION)
+                .datePaiement(UPDATED_DATE_PAIEMENT)
+                .volumeM3(UPDATED_VOLUME_M_3)
+                .montantBaseHt(UPDATED_MONTANT_BASE_HT)
+                .montantSupplementsHt(UPDATED_MONTANT_SUPPLEMENTS_HT)
+                .montantHt(UPDATED_MONTANT_HT)
+                .tauxTva(UPDATED_TAUX_TVA)
+                .montantTva(UPDATED_MONTANT_TVA)
+                .montantTtc(UPDATED_MONTANT_TTC)
+                .devise(UPDATED_DEVISE)
+                .tauxChangeCfa(UPDATED_TAUX_CHANGE_CFA)
+                .statut(UPDATED_STATUT)
+                .notes(UPDATED_NOTES)
+                .cheminPdf(UPDATED_CHEMIN_PDF)
+                .creeParLogin(UPDATED_CREE_PAR_LOGIN);
         // Add required entity
         Navire navire;
         if (TestUtil.findAll(em, Navire.class).isEmpty()) {
@@ -252,14 +253,14 @@ class FactureResourceIT {
         // Create the Facture
         FactureDTO factureDTO = factureMapper.toDto(facture);
         var returnedFactureDTO = om.readValue(
-            restFactureMockMvc
-                .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(factureDTO)))
-                .andExpect(status().isCreated())
-                .andReturn()
-                .getResponse()
-                .getContentAsString(),
-            FactureDTO.class
-        );
+                restFactureMockMvc
+                        .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON)
+                                .content(om.writeValueAsBytes(factureDTO)))
+                        .andExpect(status().isCreated())
+                        .andReturn()
+                        .getResponse()
+                        .getContentAsString(),
+                FactureDTO.class);
 
         // Validate the Facture in the database
         assertIncrementedRepositoryCount(databaseSizeBeforeCreate);
@@ -280,8 +281,9 @@ class FactureResourceIT {
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restFactureMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(factureDTO)))
-            .andExpect(status().isBadRequest());
+                .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON)
+                        .content(om.writeValueAsBytes(factureDTO)))
+                .andExpect(status().isBadRequest());
 
         // Validate the Facture in the database
         assertSameRepositoryCount(databaseSizeBeforeCreate);
@@ -298,8 +300,9 @@ class FactureResourceIT {
         FactureDTO factureDTO = factureMapper.toDto(facture);
 
         restFactureMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(factureDTO)))
-            .andExpect(status().isBadRequest());
+                .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON)
+                        .content(om.writeValueAsBytes(factureDTO)))
+                .andExpect(status().isBadRequest());
 
         assertSameRepositoryCount(databaseSizeBeforeTest);
     }
@@ -315,8 +318,9 @@ class FactureResourceIT {
         FactureDTO factureDTO = factureMapper.toDto(facture);
 
         restFactureMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(factureDTO)))
-            .andExpect(status().isBadRequest());
+                .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON)
+                        .content(om.writeValueAsBytes(factureDTO)))
+                .andExpect(status().isBadRequest());
 
         assertSameRepositoryCount(databaseSizeBeforeTest);
     }
@@ -332,8 +336,9 @@ class FactureResourceIT {
         FactureDTO factureDTO = factureMapper.toDto(facture);
 
         restFactureMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(factureDTO)))
-            .andExpect(status().isBadRequest());
+                .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON)
+                        .content(om.writeValueAsBytes(factureDTO)))
+                .andExpect(status().isBadRequest());
 
         assertSameRepositoryCount(databaseSizeBeforeTest);
     }
@@ -349,8 +354,9 @@ class FactureResourceIT {
         FactureDTO factureDTO = factureMapper.toDto(facture);
 
         restFactureMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(factureDTO)))
-            .andExpect(status().isBadRequest());
+                .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON)
+                        .content(om.writeValueAsBytes(factureDTO)))
+                .andExpect(status().isBadRequest());
 
         assertSameRepositoryCount(databaseSizeBeforeTest);
     }
@@ -366,8 +372,9 @@ class FactureResourceIT {
         FactureDTO factureDTO = factureMapper.toDto(facture);
 
         restFactureMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(factureDTO)))
-            .andExpect(status().isBadRequest());
+                .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON)
+                        .content(om.writeValueAsBytes(factureDTO)))
+                .andExpect(status().isBadRequest());
 
         assertSameRepositoryCount(databaseSizeBeforeTest);
     }
@@ -383,8 +390,9 @@ class FactureResourceIT {
         FactureDTO factureDTO = factureMapper.toDto(facture);
 
         restFactureMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(factureDTO)))
-            .andExpect(status().isBadRequest());
+                .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON)
+                        .content(om.writeValueAsBytes(factureDTO)))
+                .andExpect(status().isBadRequest());
 
         assertSameRepositoryCount(databaseSizeBeforeTest);
     }
@@ -400,8 +408,9 @@ class FactureResourceIT {
         FactureDTO factureDTO = factureMapper.toDto(facture);
 
         restFactureMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(factureDTO)))
-            .andExpect(status().isBadRequest());
+                .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON)
+                        .content(om.writeValueAsBytes(factureDTO)))
+                .andExpect(status().isBadRequest());
 
         assertSameRepositoryCount(databaseSizeBeforeTest);
     }
@@ -417,8 +426,9 @@ class FactureResourceIT {
         FactureDTO factureDTO = factureMapper.toDto(facture);
 
         restFactureMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(factureDTO)))
-            .andExpect(status().isBadRequest());
+                .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON)
+                        .content(om.writeValueAsBytes(factureDTO)))
+                .andExpect(status().isBadRequest());
 
         assertSameRepositoryCount(databaseSizeBeforeTest);
     }
@@ -434,8 +444,9 @@ class FactureResourceIT {
         FactureDTO factureDTO = factureMapper.toDto(facture);
 
         restFactureMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(factureDTO)))
-            .andExpect(status().isBadRequest());
+                .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON)
+                        .content(om.writeValueAsBytes(factureDTO)))
+                .andExpect(status().isBadRequest());
 
         assertSameRepositoryCount(databaseSizeBeforeTest);
     }
@@ -451,8 +462,9 @@ class FactureResourceIT {
         FactureDTO factureDTO = factureMapper.toDto(facture);
 
         restFactureMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(factureDTO)))
-            .andExpect(status().isBadRequest());
+                .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON)
+                        .content(om.writeValueAsBytes(factureDTO)))
+                .andExpect(status().isBadRequest());
 
         assertSameRepositoryCount(databaseSizeBeforeTest);
     }
@@ -468,8 +480,9 @@ class FactureResourceIT {
         FactureDTO factureDTO = factureMapper.toDto(facture);
 
         restFactureMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(factureDTO)))
-            .andExpect(status().isBadRequest());
+                .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON)
+                        .content(om.writeValueAsBytes(factureDTO)))
+                .andExpect(status().isBadRequest());
 
         assertSameRepositoryCount(databaseSizeBeforeTest);
     }
@@ -482,26 +495,26 @@ class FactureResourceIT {
 
         // Get all the factureList
         restFactureMockMvc
-            .perform(get(ENTITY_API_URL + "?sort=id,desc"))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(jsonPath("$.[*].id").value(hasItem(facture.getId().intValue())))
-            .andExpect(jsonPath("$.[*].numero").value(hasItem(DEFAULT_NUMERO)))
-            .andExpect(jsonPath("$.[*].dateEmission").value(hasItem(DEFAULT_DATE_EMISSION.toString())))
-            .andExpect(jsonPath("$.[*].datePaiement").value(hasItem(DEFAULT_DATE_PAIEMENT.toString())))
-            .andExpect(jsonPath("$.[*].volumeM3").value(hasItem(DEFAULT_VOLUME_M_3)))
-            .andExpect(jsonPath("$.[*].montantBaseHt").value(hasItem(DEFAULT_MONTANT_BASE_HT)))
-            .andExpect(jsonPath("$.[*].montantSupplementsHt").value(hasItem(DEFAULT_MONTANT_SUPPLEMENTS_HT)))
-            .andExpect(jsonPath("$.[*].montantHt").value(hasItem(DEFAULT_MONTANT_HT)))
-            .andExpect(jsonPath("$.[*].tauxTva").value(hasItem(DEFAULT_TAUX_TVA)))
-            .andExpect(jsonPath("$.[*].montantTva").value(hasItem(DEFAULT_MONTANT_TVA)))
-            .andExpect(jsonPath("$.[*].montantTtc").value(hasItem(DEFAULT_MONTANT_TTC)))
-            .andExpect(jsonPath("$.[*].devise").value(hasItem(DEFAULT_DEVISE.toString())))
-            .andExpect(jsonPath("$.[*].tauxChangeCfa").value(hasItem(DEFAULT_TAUX_CHANGE_CFA)))
-            .andExpect(jsonPath("$.[*].statut").value(hasItem(DEFAULT_STATUT.toString())))
-            .andExpect(jsonPath("$.[*].notes").value(hasItem(DEFAULT_NOTES)))
-            .andExpect(jsonPath("$.[*].cheminPdf").value(hasItem(DEFAULT_CHEMIN_PDF)))
-            .andExpect(jsonPath("$.[*].creeParLogin").value(hasItem(DEFAULT_CREE_PAR_LOGIN)));
+                .perform(get(ENTITY_API_URL + "?sort=id,desc"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(jsonPath("$.[*].id").value(hasItem(facture.getId().intValue())))
+                .andExpect(jsonPath("$.[*].numero").value(hasItem(DEFAULT_NUMERO)))
+                .andExpect(jsonPath("$.[*].dateEmission").value(hasItem(DEFAULT_DATE_EMISSION.toString())))
+                .andExpect(jsonPath("$.[*].datePaiement").value(hasItem(DEFAULT_DATE_PAIEMENT.toString())))
+                .andExpect(jsonPath("$.[*].volumeM3").value(hasItem(DEFAULT_VOLUME_M_3)))
+                .andExpect(jsonPath("$.[*].montantBaseHt").value(hasItem(DEFAULT_MONTANT_BASE_HT)))
+                .andExpect(jsonPath("$.[*].montantSupplementsHt").value(hasItem(DEFAULT_MONTANT_SUPPLEMENTS_HT)))
+                .andExpect(jsonPath("$.[*].montantHt").value(hasItem(DEFAULT_MONTANT_HT)))
+                .andExpect(jsonPath("$.[*].tauxTva").value(hasItem(DEFAULT_TAUX_TVA)))
+                .andExpect(jsonPath("$.[*].montantTva").value(hasItem(DEFAULT_MONTANT_TVA)))
+                .andExpect(jsonPath("$.[*].montantTtc").value(hasItem(DEFAULT_MONTANT_TTC)))
+                .andExpect(jsonPath("$.[*].devise").value(hasItem(DEFAULT_DEVISE.toString())))
+                .andExpect(jsonPath("$.[*].tauxChangeCfa").value(hasItem(DEFAULT_TAUX_CHANGE_CFA)))
+                .andExpect(jsonPath("$.[*].statut").value(hasItem(DEFAULT_STATUT.toString())))
+                .andExpect(jsonPath("$.[*].notes").value(hasItem(DEFAULT_NOTES)))
+                .andExpect(jsonPath("$.[*].cheminPdf").value(hasItem(DEFAULT_CHEMIN_PDF)))
+                .andExpect(jsonPath("$.[*].creeParLogin").value(hasItem(DEFAULT_CREE_PAR_LOGIN)));
     }
 
     @SuppressWarnings({ "unchecked" })
@@ -529,26 +542,26 @@ class FactureResourceIT {
 
         // Get the facture
         restFactureMockMvc
-            .perform(get(ENTITY_API_URL_ID, facture.getId()))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(jsonPath("$.id").value(facture.getId().intValue()))
-            .andExpect(jsonPath("$.numero").value(DEFAULT_NUMERO))
-            .andExpect(jsonPath("$.dateEmission").value(DEFAULT_DATE_EMISSION.toString()))
-            .andExpect(jsonPath("$.datePaiement").value(DEFAULT_DATE_PAIEMENT.toString()))
-            .andExpect(jsonPath("$.volumeM3").value(DEFAULT_VOLUME_M_3))
-            .andExpect(jsonPath("$.montantBaseHt").value(DEFAULT_MONTANT_BASE_HT))
-            .andExpect(jsonPath("$.montantSupplementsHt").value(DEFAULT_MONTANT_SUPPLEMENTS_HT))
-            .andExpect(jsonPath("$.montantHt").value(DEFAULT_MONTANT_HT))
-            .andExpect(jsonPath("$.tauxTva").value(DEFAULT_TAUX_TVA))
-            .andExpect(jsonPath("$.montantTva").value(DEFAULT_MONTANT_TVA))
-            .andExpect(jsonPath("$.montantTtc").value(DEFAULT_MONTANT_TTC))
-            .andExpect(jsonPath("$.devise").value(DEFAULT_DEVISE.toString()))
-            .andExpect(jsonPath("$.tauxChangeCfa").value(DEFAULT_TAUX_CHANGE_CFA))
-            .andExpect(jsonPath("$.statut").value(DEFAULT_STATUT.toString()))
-            .andExpect(jsonPath("$.notes").value(DEFAULT_NOTES))
-            .andExpect(jsonPath("$.cheminPdf").value(DEFAULT_CHEMIN_PDF))
-            .andExpect(jsonPath("$.creeParLogin").value(DEFAULT_CREE_PAR_LOGIN));
+                .perform(get(ENTITY_API_URL_ID, facture.getId()))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(jsonPath("$.id").value(facture.getId().intValue()))
+                .andExpect(jsonPath("$.numero").value(DEFAULT_NUMERO))
+                .andExpect(jsonPath("$.dateEmission").value(DEFAULT_DATE_EMISSION.toString()))
+                .andExpect(jsonPath("$.datePaiement").value(DEFAULT_DATE_PAIEMENT.toString()))
+                .andExpect(jsonPath("$.volumeM3").value(DEFAULT_VOLUME_M_3))
+                .andExpect(jsonPath("$.montantBaseHt").value(DEFAULT_MONTANT_BASE_HT))
+                .andExpect(jsonPath("$.montantSupplementsHt").value(DEFAULT_MONTANT_SUPPLEMENTS_HT))
+                .andExpect(jsonPath("$.montantHt").value(DEFAULT_MONTANT_HT))
+                .andExpect(jsonPath("$.tauxTva").value(DEFAULT_TAUX_TVA))
+                .andExpect(jsonPath("$.montantTva").value(DEFAULT_MONTANT_TVA))
+                .andExpect(jsonPath("$.montantTtc").value(DEFAULT_MONTANT_TTC))
+                .andExpect(jsonPath("$.devise").value(DEFAULT_DEVISE.toString()))
+                .andExpect(jsonPath("$.tauxChangeCfa").value(DEFAULT_TAUX_CHANGE_CFA))
+                .andExpect(jsonPath("$.statut").value(DEFAULT_STATUT.toString()))
+                .andExpect(jsonPath("$.notes").value(DEFAULT_NOTES))
+                .andExpect(jsonPath("$.cheminPdf").value(DEFAULT_CHEMIN_PDF))
+                .andExpect(jsonPath("$.creeParLogin").value(DEFAULT_CREE_PAR_LOGIN));
     }
 
     @Test
@@ -623,7 +636,8 @@ class FactureResourceIT {
         insertedFacture = factureRepository.saveAndFlush(facture);
 
         // Get all the factureList where dateEmission equals to
-        defaultFactureFiltering("dateEmission.equals=" + DEFAULT_DATE_EMISSION, "dateEmission.equals=" + UPDATED_DATE_EMISSION);
+        defaultFactureFiltering("dateEmission.equals=" + DEFAULT_DATE_EMISSION,
+                "dateEmission.equals=" + UPDATED_DATE_EMISSION);
     }
 
     @Test
@@ -634,9 +648,8 @@ class FactureResourceIT {
 
         // Get all the factureList where dateEmission in
         defaultFactureFiltering(
-            "dateEmission.in=" + DEFAULT_DATE_EMISSION + "," + UPDATED_DATE_EMISSION,
-            "dateEmission.in=" + UPDATED_DATE_EMISSION
-        );
+                "dateEmission.in=" + DEFAULT_DATE_EMISSION + "," + UPDATED_DATE_EMISSION,
+                "dateEmission.in=" + UPDATED_DATE_EMISSION);
     }
 
     @Test
@@ -657,9 +670,8 @@ class FactureResourceIT {
 
         // Get all the factureList where dateEmission is greater than or equal to
         defaultFactureFiltering(
-            "dateEmission.greaterThanOrEqual=" + DEFAULT_DATE_EMISSION,
-            "dateEmission.greaterThanOrEqual=" + UPDATED_DATE_EMISSION
-        );
+                "dateEmission.greaterThanOrEqual=" + DEFAULT_DATE_EMISSION,
+                "dateEmission.greaterThanOrEqual=" + UPDATED_DATE_EMISSION);
     }
 
     @Test
@@ -670,9 +682,8 @@ class FactureResourceIT {
 
         // Get all the factureList where dateEmission is less than or equal to
         defaultFactureFiltering(
-            "dateEmission.lessThanOrEqual=" + DEFAULT_DATE_EMISSION,
-            "dateEmission.lessThanOrEqual=" + SMALLER_DATE_EMISSION
-        );
+                "dateEmission.lessThanOrEqual=" + DEFAULT_DATE_EMISSION,
+                "dateEmission.lessThanOrEqual=" + SMALLER_DATE_EMISSION);
     }
 
     @Test
@@ -682,7 +693,8 @@ class FactureResourceIT {
         insertedFacture = factureRepository.saveAndFlush(facture);
 
         // Get all the factureList where dateEmission is less than
-        defaultFactureFiltering("dateEmission.lessThan=" + UPDATED_DATE_EMISSION, "dateEmission.lessThan=" + DEFAULT_DATE_EMISSION);
+        defaultFactureFiltering("dateEmission.lessThan=" + UPDATED_DATE_EMISSION,
+                "dateEmission.lessThan=" + DEFAULT_DATE_EMISSION);
     }
 
     @Test
@@ -692,7 +704,8 @@ class FactureResourceIT {
         insertedFacture = factureRepository.saveAndFlush(facture);
 
         // Get all the factureList where dateEmission is greater than
-        defaultFactureFiltering("dateEmission.greaterThan=" + SMALLER_DATE_EMISSION, "dateEmission.greaterThan=" + DEFAULT_DATE_EMISSION);
+        defaultFactureFiltering("dateEmission.greaterThan=" + SMALLER_DATE_EMISSION,
+                "dateEmission.greaterThan=" + DEFAULT_DATE_EMISSION);
     }
 
     @Test
@@ -702,7 +715,8 @@ class FactureResourceIT {
         insertedFacture = factureRepository.saveAndFlush(facture);
 
         // Get all the factureList where datePaiement equals to
-        defaultFactureFiltering("datePaiement.equals=" + DEFAULT_DATE_PAIEMENT, "datePaiement.equals=" + UPDATED_DATE_PAIEMENT);
+        defaultFactureFiltering("datePaiement.equals=" + DEFAULT_DATE_PAIEMENT,
+                "datePaiement.equals=" + UPDATED_DATE_PAIEMENT);
     }
 
     @Test
@@ -713,9 +727,8 @@ class FactureResourceIT {
 
         // Get all the factureList where datePaiement in
         defaultFactureFiltering(
-            "datePaiement.in=" + DEFAULT_DATE_PAIEMENT + "," + UPDATED_DATE_PAIEMENT,
-            "datePaiement.in=" + UPDATED_DATE_PAIEMENT
-        );
+                "datePaiement.in=" + DEFAULT_DATE_PAIEMENT + "," + UPDATED_DATE_PAIEMENT,
+                "datePaiement.in=" + UPDATED_DATE_PAIEMENT);
     }
 
     @Test
@@ -736,9 +749,8 @@ class FactureResourceIT {
 
         // Get all the factureList where datePaiement is greater than or equal to
         defaultFactureFiltering(
-            "datePaiement.greaterThanOrEqual=" + DEFAULT_DATE_PAIEMENT,
-            "datePaiement.greaterThanOrEqual=" + UPDATED_DATE_PAIEMENT
-        );
+                "datePaiement.greaterThanOrEqual=" + DEFAULT_DATE_PAIEMENT,
+                "datePaiement.greaterThanOrEqual=" + UPDATED_DATE_PAIEMENT);
     }
 
     @Test
@@ -749,9 +761,8 @@ class FactureResourceIT {
 
         // Get all the factureList where datePaiement is less than or equal to
         defaultFactureFiltering(
-            "datePaiement.lessThanOrEqual=" + DEFAULT_DATE_PAIEMENT,
-            "datePaiement.lessThanOrEqual=" + SMALLER_DATE_PAIEMENT
-        );
+                "datePaiement.lessThanOrEqual=" + DEFAULT_DATE_PAIEMENT,
+                "datePaiement.lessThanOrEqual=" + SMALLER_DATE_PAIEMENT);
     }
 
     @Test
@@ -761,7 +772,8 @@ class FactureResourceIT {
         insertedFacture = factureRepository.saveAndFlush(facture);
 
         // Get all the factureList where datePaiement is less than
-        defaultFactureFiltering("datePaiement.lessThan=" + UPDATED_DATE_PAIEMENT, "datePaiement.lessThan=" + DEFAULT_DATE_PAIEMENT);
+        defaultFactureFiltering("datePaiement.lessThan=" + UPDATED_DATE_PAIEMENT,
+                "datePaiement.lessThan=" + DEFAULT_DATE_PAIEMENT);
     }
 
     @Test
@@ -771,7 +783,8 @@ class FactureResourceIT {
         insertedFacture = factureRepository.saveAndFlush(facture);
 
         // Get all the factureList where datePaiement is greater than
-        defaultFactureFiltering("datePaiement.greaterThan=" + SMALLER_DATE_PAIEMENT, "datePaiement.greaterThan=" + DEFAULT_DATE_PAIEMENT);
+        defaultFactureFiltering("datePaiement.greaterThan=" + SMALLER_DATE_PAIEMENT,
+                "datePaiement.greaterThan=" + DEFAULT_DATE_PAIEMENT);
     }
 
     @Test
@@ -791,7 +804,8 @@ class FactureResourceIT {
         insertedFacture = factureRepository.saveAndFlush(facture);
 
         // Get all the factureList where volumeM3 in
-        defaultFactureFiltering("volumeM3.in=" + DEFAULT_VOLUME_M_3 + "," + UPDATED_VOLUME_M_3, "volumeM3.in=" + UPDATED_VOLUME_M_3);
+        defaultFactureFiltering("volumeM3.in=" + DEFAULT_VOLUME_M_3 + "," + UPDATED_VOLUME_M_3,
+                "volumeM3.in=" + UPDATED_VOLUME_M_3);
     }
 
     @Test
@@ -811,7 +825,8 @@ class FactureResourceIT {
         insertedFacture = factureRepository.saveAndFlush(facture);
 
         // Get all the factureList where volumeM3 is greater than or equal to
-        defaultFactureFiltering("volumeM3.greaterThanOrEqual=" + DEFAULT_VOLUME_M_3, "volumeM3.greaterThanOrEqual=" + UPDATED_VOLUME_M_3);
+        defaultFactureFiltering("volumeM3.greaterThanOrEqual=" + DEFAULT_VOLUME_M_3,
+                "volumeM3.greaterThanOrEqual=" + UPDATED_VOLUME_M_3);
     }
 
     @Test
@@ -821,7 +836,8 @@ class FactureResourceIT {
         insertedFacture = factureRepository.saveAndFlush(facture);
 
         // Get all the factureList where volumeM3 is less than or equal to
-        defaultFactureFiltering("volumeM3.lessThanOrEqual=" + DEFAULT_VOLUME_M_3, "volumeM3.lessThanOrEqual=" + SMALLER_VOLUME_M_3);
+        defaultFactureFiltering("volumeM3.lessThanOrEqual=" + DEFAULT_VOLUME_M_3,
+                "volumeM3.lessThanOrEqual=" + SMALLER_VOLUME_M_3);
     }
 
     @Test
@@ -841,7 +857,8 @@ class FactureResourceIT {
         insertedFacture = factureRepository.saveAndFlush(facture);
 
         // Get all the factureList where volumeM3 is greater than
-        defaultFactureFiltering("volumeM3.greaterThan=" + SMALLER_VOLUME_M_3, "volumeM3.greaterThan=" + DEFAULT_VOLUME_M_3);
+        defaultFactureFiltering("volumeM3.greaterThan=" + SMALLER_VOLUME_M_3,
+                "volumeM3.greaterThan=" + DEFAULT_VOLUME_M_3);
     }
 
     @Test
@@ -851,7 +868,8 @@ class FactureResourceIT {
         insertedFacture = factureRepository.saveAndFlush(facture);
 
         // Get all the factureList where montantBaseHt equals to
-        defaultFactureFiltering("montantBaseHt.equals=" + DEFAULT_MONTANT_BASE_HT, "montantBaseHt.equals=" + UPDATED_MONTANT_BASE_HT);
+        defaultFactureFiltering("montantBaseHt.equals=" + DEFAULT_MONTANT_BASE_HT,
+                "montantBaseHt.equals=" + UPDATED_MONTANT_BASE_HT);
     }
 
     @Test
@@ -862,9 +880,8 @@ class FactureResourceIT {
 
         // Get all the factureList where montantBaseHt in
         defaultFactureFiltering(
-            "montantBaseHt.in=" + DEFAULT_MONTANT_BASE_HT + "," + UPDATED_MONTANT_BASE_HT,
-            "montantBaseHt.in=" + UPDATED_MONTANT_BASE_HT
-        );
+                "montantBaseHt.in=" + DEFAULT_MONTANT_BASE_HT + "," + UPDATED_MONTANT_BASE_HT,
+                "montantBaseHt.in=" + UPDATED_MONTANT_BASE_HT);
     }
 
     @Test
@@ -885,9 +902,8 @@ class FactureResourceIT {
 
         // Get all the factureList where montantBaseHt is greater than or equal to
         defaultFactureFiltering(
-            "montantBaseHt.greaterThanOrEqual=" + DEFAULT_MONTANT_BASE_HT,
-            "montantBaseHt.greaterThanOrEqual=" + UPDATED_MONTANT_BASE_HT
-        );
+                "montantBaseHt.greaterThanOrEqual=" + DEFAULT_MONTANT_BASE_HT,
+                "montantBaseHt.greaterThanOrEqual=" + UPDATED_MONTANT_BASE_HT);
     }
 
     @Test
@@ -898,9 +914,8 @@ class FactureResourceIT {
 
         // Get all the factureList where montantBaseHt is less than or equal to
         defaultFactureFiltering(
-            "montantBaseHt.lessThanOrEqual=" + DEFAULT_MONTANT_BASE_HT,
-            "montantBaseHt.lessThanOrEqual=" + SMALLER_MONTANT_BASE_HT
-        );
+                "montantBaseHt.lessThanOrEqual=" + DEFAULT_MONTANT_BASE_HT,
+                "montantBaseHt.lessThanOrEqual=" + SMALLER_MONTANT_BASE_HT);
     }
 
     @Test
@@ -910,7 +925,8 @@ class FactureResourceIT {
         insertedFacture = factureRepository.saveAndFlush(facture);
 
         // Get all the factureList where montantBaseHt is less than
-        defaultFactureFiltering("montantBaseHt.lessThan=" + UPDATED_MONTANT_BASE_HT, "montantBaseHt.lessThan=" + DEFAULT_MONTANT_BASE_HT);
+        defaultFactureFiltering("montantBaseHt.lessThan=" + UPDATED_MONTANT_BASE_HT,
+                "montantBaseHt.lessThan=" + DEFAULT_MONTANT_BASE_HT);
     }
 
     @Test
@@ -921,9 +937,8 @@ class FactureResourceIT {
 
         // Get all the factureList where montantBaseHt is greater than
         defaultFactureFiltering(
-            "montantBaseHt.greaterThan=" + SMALLER_MONTANT_BASE_HT,
-            "montantBaseHt.greaterThan=" + DEFAULT_MONTANT_BASE_HT
-        );
+                "montantBaseHt.greaterThan=" + SMALLER_MONTANT_BASE_HT,
+                "montantBaseHt.greaterThan=" + DEFAULT_MONTANT_BASE_HT);
     }
 
     @Test
@@ -934,9 +949,8 @@ class FactureResourceIT {
 
         // Get all the factureList where montantSupplementsHt equals to
         defaultFactureFiltering(
-            "montantSupplementsHt.equals=" + DEFAULT_MONTANT_SUPPLEMENTS_HT,
-            "montantSupplementsHt.equals=" + UPDATED_MONTANT_SUPPLEMENTS_HT
-        );
+                "montantSupplementsHt.equals=" + DEFAULT_MONTANT_SUPPLEMENTS_HT,
+                "montantSupplementsHt.equals=" + UPDATED_MONTANT_SUPPLEMENTS_HT);
     }
 
     @Test
@@ -947,9 +961,8 @@ class FactureResourceIT {
 
         // Get all the factureList where montantSupplementsHt in
         defaultFactureFiltering(
-            "montantSupplementsHt.in=" + DEFAULT_MONTANT_SUPPLEMENTS_HT + "," + UPDATED_MONTANT_SUPPLEMENTS_HT,
-            "montantSupplementsHt.in=" + UPDATED_MONTANT_SUPPLEMENTS_HT
-        );
+                "montantSupplementsHt.in=" + DEFAULT_MONTANT_SUPPLEMENTS_HT + "," + UPDATED_MONTANT_SUPPLEMENTS_HT,
+                "montantSupplementsHt.in=" + UPDATED_MONTANT_SUPPLEMENTS_HT);
     }
 
     @Test
@@ -968,11 +981,11 @@ class FactureResourceIT {
         // Initialize the database
         insertedFacture = factureRepository.saveAndFlush(facture);
 
-        // Get all the factureList where montantSupplementsHt is greater than or equal to
+        // Get all the factureList where montantSupplementsHt is greater than or equal
+        // to
         defaultFactureFiltering(
-            "montantSupplementsHt.greaterThanOrEqual=" + DEFAULT_MONTANT_SUPPLEMENTS_HT,
-            "montantSupplementsHt.greaterThanOrEqual=" + UPDATED_MONTANT_SUPPLEMENTS_HT
-        );
+                "montantSupplementsHt.greaterThanOrEqual=" + DEFAULT_MONTANT_SUPPLEMENTS_HT,
+                "montantSupplementsHt.greaterThanOrEqual=" + UPDATED_MONTANT_SUPPLEMENTS_HT);
     }
 
     @Test
@@ -983,9 +996,8 @@ class FactureResourceIT {
 
         // Get all the factureList where montantSupplementsHt is less than or equal to
         defaultFactureFiltering(
-            "montantSupplementsHt.lessThanOrEqual=" + DEFAULT_MONTANT_SUPPLEMENTS_HT,
-            "montantSupplementsHt.lessThanOrEqual=" + SMALLER_MONTANT_SUPPLEMENTS_HT
-        );
+                "montantSupplementsHt.lessThanOrEqual=" + DEFAULT_MONTANT_SUPPLEMENTS_HT,
+                "montantSupplementsHt.lessThanOrEqual=" + SMALLER_MONTANT_SUPPLEMENTS_HT);
     }
 
     @Test
@@ -996,9 +1008,8 @@ class FactureResourceIT {
 
         // Get all the factureList where montantSupplementsHt is less than
         defaultFactureFiltering(
-            "montantSupplementsHt.lessThan=" + UPDATED_MONTANT_SUPPLEMENTS_HT,
-            "montantSupplementsHt.lessThan=" + DEFAULT_MONTANT_SUPPLEMENTS_HT
-        );
+                "montantSupplementsHt.lessThan=" + UPDATED_MONTANT_SUPPLEMENTS_HT,
+                "montantSupplementsHt.lessThan=" + DEFAULT_MONTANT_SUPPLEMENTS_HT);
     }
 
     @Test
@@ -1009,9 +1020,8 @@ class FactureResourceIT {
 
         // Get all the factureList where montantSupplementsHt is greater than
         defaultFactureFiltering(
-            "montantSupplementsHt.greaterThan=" + SMALLER_MONTANT_SUPPLEMENTS_HT,
-            "montantSupplementsHt.greaterThan=" + DEFAULT_MONTANT_SUPPLEMENTS_HT
-        );
+                "montantSupplementsHt.greaterThan=" + SMALLER_MONTANT_SUPPLEMENTS_HT,
+                "montantSupplementsHt.greaterThan=" + DEFAULT_MONTANT_SUPPLEMENTS_HT);
     }
 
     @Test
@@ -1031,7 +1041,8 @@ class FactureResourceIT {
         insertedFacture = factureRepository.saveAndFlush(facture);
 
         // Get all the factureList where montantHt in
-        defaultFactureFiltering("montantHt.in=" + DEFAULT_MONTANT_HT + "," + UPDATED_MONTANT_HT, "montantHt.in=" + UPDATED_MONTANT_HT);
+        defaultFactureFiltering("montantHt.in=" + DEFAULT_MONTANT_HT + "," + UPDATED_MONTANT_HT,
+                "montantHt.in=" + UPDATED_MONTANT_HT);
     }
 
     @Test
@@ -1051,7 +1062,8 @@ class FactureResourceIT {
         insertedFacture = factureRepository.saveAndFlush(facture);
 
         // Get all the factureList where montantHt is greater than or equal to
-        defaultFactureFiltering("montantHt.greaterThanOrEqual=" + DEFAULT_MONTANT_HT, "montantHt.greaterThanOrEqual=" + UPDATED_MONTANT_HT);
+        defaultFactureFiltering("montantHt.greaterThanOrEqual=" + DEFAULT_MONTANT_HT,
+                "montantHt.greaterThanOrEqual=" + UPDATED_MONTANT_HT);
     }
 
     @Test
@@ -1061,7 +1073,8 @@ class FactureResourceIT {
         insertedFacture = factureRepository.saveAndFlush(facture);
 
         // Get all the factureList where montantHt is less than or equal to
-        defaultFactureFiltering("montantHt.lessThanOrEqual=" + DEFAULT_MONTANT_HT, "montantHt.lessThanOrEqual=" + SMALLER_MONTANT_HT);
+        defaultFactureFiltering("montantHt.lessThanOrEqual=" + DEFAULT_MONTANT_HT,
+                "montantHt.lessThanOrEqual=" + SMALLER_MONTANT_HT);
     }
 
     @Test
@@ -1081,7 +1094,8 @@ class FactureResourceIT {
         insertedFacture = factureRepository.saveAndFlush(facture);
 
         // Get all the factureList where montantHt is greater than
-        defaultFactureFiltering("montantHt.greaterThan=" + SMALLER_MONTANT_HT, "montantHt.greaterThan=" + DEFAULT_MONTANT_HT);
+        defaultFactureFiltering("montantHt.greaterThan=" + SMALLER_MONTANT_HT,
+                "montantHt.greaterThan=" + DEFAULT_MONTANT_HT);
     }
 
     @Test
@@ -1101,7 +1115,8 @@ class FactureResourceIT {
         insertedFacture = factureRepository.saveAndFlush(facture);
 
         // Get all the factureList where tauxTva in
-        defaultFactureFiltering("tauxTva.in=" + DEFAULT_TAUX_TVA + "," + UPDATED_TAUX_TVA, "tauxTva.in=" + UPDATED_TAUX_TVA);
+        defaultFactureFiltering("tauxTva.in=" + DEFAULT_TAUX_TVA + "," + UPDATED_TAUX_TVA,
+                "tauxTva.in=" + UPDATED_TAUX_TVA);
     }
 
     @Test
@@ -1121,7 +1136,8 @@ class FactureResourceIT {
         insertedFacture = factureRepository.saveAndFlush(facture);
 
         // Get all the factureList where tauxTva is greater than or equal to
-        defaultFactureFiltering("tauxTva.greaterThanOrEqual=" + DEFAULT_TAUX_TVA, "tauxTva.greaterThanOrEqual=" + (DEFAULT_TAUX_TVA + 1));
+        defaultFactureFiltering("tauxTva.greaterThanOrEqual=" + DEFAULT_TAUX_TVA,
+                "tauxTva.greaterThanOrEqual=" + (DEFAULT_TAUX_TVA + 1));
     }
 
     @Test
@@ -1131,7 +1147,8 @@ class FactureResourceIT {
         insertedFacture = factureRepository.saveAndFlush(facture);
 
         // Get all the factureList where tauxTva is less than or equal to
-        defaultFactureFiltering("tauxTva.lessThanOrEqual=" + DEFAULT_TAUX_TVA, "tauxTva.lessThanOrEqual=" + SMALLER_TAUX_TVA);
+        defaultFactureFiltering("tauxTva.lessThanOrEqual=" + DEFAULT_TAUX_TVA,
+                "tauxTva.lessThanOrEqual=" + SMALLER_TAUX_TVA);
     }
 
     @Test
@@ -1171,7 +1188,8 @@ class FactureResourceIT {
         insertedFacture = factureRepository.saveAndFlush(facture);
 
         // Get all the factureList where montantTva in
-        defaultFactureFiltering("montantTva.in=" + DEFAULT_MONTANT_TVA + "," + UPDATED_MONTANT_TVA, "montantTva.in=" + UPDATED_MONTANT_TVA);
+        defaultFactureFiltering("montantTva.in=" + DEFAULT_MONTANT_TVA + "," + UPDATED_MONTANT_TVA,
+                "montantTva.in=" + UPDATED_MONTANT_TVA);
     }
 
     @Test
@@ -1192,9 +1210,8 @@ class FactureResourceIT {
 
         // Get all the factureList where montantTva is greater than or equal to
         defaultFactureFiltering(
-            "montantTva.greaterThanOrEqual=" + DEFAULT_MONTANT_TVA,
-            "montantTva.greaterThanOrEqual=" + UPDATED_MONTANT_TVA
-        );
+                "montantTva.greaterThanOrEqual=" + DEFAULT_MONTANT_TVA,
+                "montantTva.greaterThanOrEqual=" + UPDATED_MONTANT_TVA);
     }
 
     @Test
@@ -1204,7 +1221,8 @@ class FactureResourceIT {
         insertedFacture = factureRepository.saveAndFlush(facture);
 
         // Get all the factureList where montantTva is less than or equal to
-        defaultFactureFiltering("montantTva.lessThanOrEqual=" + DEFAULT_MONTANT_TVA, "montantTva.lessThanOrEqual=" + SMALLER_MONTANT_TVA);
+        defaultFactureFiltering("montantTva.lessThanOrEqual=" + DEFAULT_MONTANT_TVA,
+                "montantTva.lessThanOrEqual=" + SMALLER_MONTANT_TVA);
     }
 
     @Test
@@ -1214,7 +1232,8 @@ class FactureResourceIT {
         insertedFacture = factureRepository.saveAndFlush(facture);
 
         // Get all the factureList where montantTva is less than
-        defaultFactureFiltering("montantTva.lessThan=" + UPDATED_MONTANT_TVA, "montantTva.lessThan=" + DEFAULT_MONTANT_TVA);
+        defaultFactureFiltering("montantTva.lessThan=" + UPDATED_MONTANT_TVA,
+                "montantTva.lessThan=" + DEFAULT_MONTANT_TVA);
     }
 
     @Test
@@ -1224,7 +1243,8 @@ class FactureResourceIT {
         insertedFacture = factureRepository.saveAndFlush(facture);
 
         // Get all the factureList where montantTva is greater than
-        defaultFactureFiltering("montantTva.greaterThan=" + SMALLER_MONTANT_TVA, "montantTva.greaterThan=" + DEFAULT_MONTANT_TVA);
+        defaultFactureFiltering("montantTva.greaterThan=" + SMALLER_MONTANT_TVA,
+                "montantTva.greaterThan=" + DEFAULT_MONTANT_TVA);
     }
 
     @Test
@@ -1244,7 +1264,8 @@ class FactureResourceIT {
         insertedFacture = factureRepository.saveAndFlush(facture);
 
         // Get all the factureList where montantTtc in
-        defaultFactureFiltering("montantTtc.in=" + DEFAULT_MONTANT_TTC + "," + UPDATED_MONTANT_TTC, "montantTtc.in=" + UPDATED_MONTANT_TTC);
+        defaultFactureFiltering("montantTtc.in=" + DEFAULT_MONTANT_TTC + "," + UPDATED_MONTANT_TTC,
+                "montantTtc.in=" + UPDATED_MONTANT_TTC);
     }
 
     @Test
@@ -1265,9 +1286,8 @@ class FactureResourceIT {
 
         // Get all the factureList where montantTtc is greater than or equal to
         defaultFactureFiltering(
-            "montantTtc.greaterThanOrEqual=" + DEFAULT_MONTANT_TTC,
-            "montantTtc.greaterThanOrEqual=" + UPDATED_MONTANT_TTC
-        );
+                "montantTtc.greaterThanOrEqual=" + DEFAULT_MONTANT_TTC,
+                "montantTtc.greaterThanOrEqual=" + UPDATED_MONTANT_TTC);
     }
 
     @Test
@@ -1277,7 +1297,8 @@ class FactureResourceIT {
         insertedFacture = factureRepository.saveAndFlush(facture);
 
         // Get all the factureList where montantTtc is less than or equal to
-        defaultFactureFiltering("montantTtc.lessThanOrEqual=" + DEFAULT_MONTANT_TTC, "montantTtc.lessThanOrEqual=" + SMALLER_MONTANT_TTC);
+        defaultFactureFiltering("montantTtc.lessThanOrEqual=" + DEFAULT_MONTANT_TTC,
+                "montantTtc.lessThanOrEqual=" + SMALLER_MONTANT_TTC);
     }
 
     @Test
@@ -1287,7 +1308,8 @@ class FactureResourceIT {
         insertedFacture = factureRepository.saveAndFlush(facture);
 
         // Get all the factureList where montantTtc is less than
-        defaultFactureFiltering("montantTtc.lessThan=" + UPDATED_MONTANT_TTC, "montantTtc.lessThan=" + DEFAULT_MONTANT_TTC);
+        defaultFactureFiltering("montantTtc.lessThan=" + UPDATED_MONTANT_TTC,
+                "montantTtc.lessThan=" + DEFAULT_MONTANT_TTC);
     }
 
     @Test
@@ -1297,7 +1319,8 @@ class FactureResourceIT {
         insertedFacture = factureRepository.saveAndFlush(facture);
 
         // Get all the factureList where montantTtc is greater than
-        defaultFactureFiltering("montantTtc.greaterThan=" + SMALLER_MONTANT_TTC, "montantTtc.greaterThan=" + DEFAULT_MONTANT_TTC);
+        defaultFactureFiltering("montantTtc.greaterThan=" + SMALLER_MONTANT_TTC,
+                "montantTtc.greaterThan=" + DEFAULT_MONTANT_TTC);
     }
 
     @Test
@@ -1337,7 +1360,8 @@ class FactureResourceIT {
         insertedFacture = factureRepository.saveAndFlush(facture);
 
         // Get all the factureList where tauxChangeCfa equals to
-        defaultFactureFiltering("tauxChangeCfa.equals=" + DEFAULT_TAUX_CHANGE_CFA, "tauxChangeCfa.equals=" + UPDATED_TAUX_CHANGE_CFA);
+        defaultFactureFiltering("tauxChangeCfa.equals=" + DEFAULT_TAUX_CHANGE_CFA,
+                "tauxChangeCfa.equals=" + UPDATED_TAUX_CHANGE_CFA);
     }
 
     @Test
@@ -1348,9 +1372,8 @@ class FactureResourceIT {
 
         // Get all the factureList where tauxChangeCfa in
         defaultFactureFiltering(
-            "tauxChangeCfa.in=" + DEFAULT_TAUX_CHANGE_CFA + "," + UPDATED_TAUX_CHANGE_CFA,
-            "tauxChangeCfa.in=" + UPDATED_TAUX_CHANGE_CFA
-        );
+                "tauxChangeCfa.in=" + DEFAULT_TAUX_CHANGE_CFA + "," + UPDATED_TAUX_CHANGE_CFA,
+                "tauxChangeCfa.in=" + UPDATED_TAUX_CHANGE_CFA);
     }
 
     @Test
@@ -1371,9 +1394,8 @@ class FactureResourceIT {
 
         // Get all the factureList where tauxChangeCfa is greater than or equal to
         defaultFactureFiltering(
-            "tauxChangeCfa.greaterThanOrEqual=" + DEFAULT_TAUX_CHANGE_CFA,
-            "tauxChangeCfa.greaterThanOrEqual=" + UPDATED_TAUX_CHANGE_CFA
-        );
+                "tauxChangeCfa.greaterThanOrEqual=" + DEFAULT_TAUX_CHANGE_CFA,
+                "tauxChangeCfa.greaterThanOrEqual=" + UPDATED_TAUX_CHANGE_CFA);
     }
 
     @Test
@@ -1384,9 +1406,8 @@ class FactureResourceIT {
 
         // Get all the factureList where tauxChangeCfa is less than or equal to
         defaultFactureFiltering(
-            "tauxChangeCfa.lessThanOrEqual=" + DEFAULT_TAUX_CHANGE_CFA,
-            "tauxChangeCfa.lessThanOrEqual=" + SMALLER_TAUX_CHANGE_CFA
-        );
+                "tauxChangeCfa.lessThanOrEqual=" + DEFAULT_TAUX_CHANGE_CFA,
+                "tauxChangeCfa.lessThanOrEqual=" + SMALLER_TAUX_CHANGE_CFA);
     }
 
     @Test
@@ -1396,7 +1417,8 @@ class FactureResourceIT {
         insertedFacture = factureRepository.saveAndFlush(facture);
 
         // Get all the factureList where tauxChangeCfa is less than
-        defaultFactureFiltering("tauxChangeCfa.lessThan=" + UPDATED_TAUX_CHANGE_CFA, "tauxChangeCfa.lessThan=" + DEFAULT_TAUX_CHANGE_CFA);
+        defaultFactureFiltering("tauxChangeCfa.lessThan=" + UPDATED_TAUX_CHANGE_CFA,
+                "tauxChangeCfa.lessThan=" + DEFAULT_TAUX_CHANGE_CFA);
     }
 
     @Test
@@ -1407,9 +1429,8 @@ class FactureResourceIT {
 
         // Get all the factureList where tauxChangeCfa is greater than
         defaultFactureFiltering(
-            "tauxChangeCfa.greaterThan=" + SMALLER_TAUX_CHANGE_CFA,
-            "tauxChangeCfa.greaterThan=" + DEFAULT_TAUX_CHANGE_CFA
-        );
+                "tauxChangeCfa.greaterThan=" + SMALLER_TAUX_CHANGE_CFA,
+                "tauxChangeCfa.greaterThan=" + DEFAULT_TAUX_CHANGE_CFA);
     }
 
     @Test
@@ -1509,7 +1530,8 @@ class FactureResourceIT {
         insertedFacture = factureRepository.saveAndFlush(facture);
 
         // Get all the factureList where cheminPdf in
-        defaultFactureFiltering("cheminPdf.in=" + DEFAULT_CHEMIN_PDF + "," + UPDATED_CHEMIN_PDF, "cheminPdf.in=" + UPDATED_CHEMIN_PDF);
+        defaultFactureFiltering("cheminPdf.in=" + DEFAULT_CHEMIN_PDF + "," + UPDATED_CHEMIN_PDF,
+                "cheminPdf.in=" + UPDATED_CHEMIN_PDF);
     }
 
     @Test
@@ -1539,7 +1561,8 @@ class FactureResourceIT {
         insertedFacture = factureRepository.saveAndFlush(facture);
 
         // Get all the factureList where cheminPdf does not contain
-        defaultFactureFiltering("cheminPdf.doesNotContain=" + UPDATED_CHEMIN_PDF, "cheminPdf.doesNotContain=" + DEFAULT_CHEMIN_PDF);
+        defaultFactureFiltering("cheminPdf.doesNotContain=" + UPDATED_CHEMIN_PDF,
+                "cheminPdf.doesNotContain=" + DEFAULT_CHEMIN_PDF);
     }
 
     @Test
@@ -1549,7 +1572,8 @@ class FactureResourceIT {
         insertedFacture = factureRepository.saveAndFlush(facture);
 
         // Get all the factureList where creeParLogin equals to
-        defaultFactureFiltering("creeParLogin.equals=" + DEFAULT_CREE_PAR_LOGIN, "creeParLogin.equals=" + UPDATED_CREE_PAR_LOGIN);
+        defaultFactureFiltering("creeParLogin.equals=" + DEFAULT_CREE_PAR_LOGIN,
+                "creeParLogin.equals=" + UPDATED_CREE_PAR_LOGIN);
     }
 
     @Test
@@ -1560,9 +1584,8 @@ class FactureResourceIT {
 
         // Get all the factureList where creeParLogin in
         defaultFactureFiltering(
-            "creeParLogin.in=" + DEFAULT_CREE_PAR_LOGIN + "," + UPDATED_CREE_PAR_LOGIN,
-            "creeParLogin.in=" + UPDATED_CREE_PAR_LOGIN
-        );
+                "creeParLogin.in=" + DEFAULT_CREE_PAR_LOGIN + "," + UPDATED_CREE_PAR_LOGIN,
+                "creeParLogin.in=" + UPDATED_CREE_PAR_LOGIN);
     }
 
     @Test
@@ -1582,7 +1605,8 @@ class FactureResourceIT {
         insertedFacture = factureRepository.saveAndFlush(facture);
 
         // Get all the factureList where creeParLogin contains
-        defaultFactureFiltering("creeParLogin.contains=" + DEFAULT_CREE_PAR_LOGIN, "creeParLogin.contains=" + UPDATED_CREE_PAR_LOGIN);
+        defaultFactureFiltering("creeParLogin.contains=" + DEFAULT_CREE_PAR_LOGIN,
+                "creeParLogin.contains=" + UPDATED_CREE_PAR_LOGIN);
     }
 
     @Test
@@ -1593,9 +1617,8 @@ class FactureResourceIT {
 
         // Get all the factureList where creeParLogin does not contain
         defaultFactureFiltering(
-            "creeParLogin.doesNotContain=" + UPDATED_CREE_PAR_LOGIN,
-            "creeParLogin.doesNotContain=" + DEFAULT_CREE_PAR_LOGIN
-        );
+                "creeParLogin.doesNotContain=" + UPDATED_CREE_PAR_LOGIN,
+                "creeParLogin.doesNotContain=" + DEFAULT_CREE_PAR_LOGIN);
     }
 
     @Test
@@ -1652,33 +1675,33 @@ class FactureResourceIT {
      */
     private void defaultFactureShouldBeFound(String filter) throws Exception {
         restFactureMockMvc
-            .perform(get(ENTITY_API_URL + "?sort=id,desc&" + filter))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(jsonPath("$.[*].id").value(hasItem(facture.getId().intValue())))
-            .andExpect(jsonPath("$.[*].numero").value(hasItem(DEFAULT_NUMERO)))
-            .andExpect(jsonPath("$.[*].dateEmission").value(hasItem(DEFAULT_DATE_EMISSION.toString())))
-            .andExpect(jsonPath("$.[*].datePaiement").value(hasItem(DEFAULT_DATE_PAIEMENT.toString())))
-            .andExpect(jsonPath("$.[*].volumeM3").value(hasItem(DEFAULT_VOLUME_M_3)))
-            .andExpect(jsonPath("$.[*].montantBaseHt").value(hasItem(DEFAULT_MONTANT_BASE_HT)))
-            .andExpect(jsonPath("$.[*].montantSupplementsHt").value(hasItem(DEFAULT_MONTANT_SUPPLEMENTS_HT)))
-            .andExpect(jsonPath("$.[*].montantHt").value(hasItem(DEFAULT_MONTANT_HT)))
-            .andExpect(jsonPath("$.[*].tauxTva").value(hasItem(DEFAULT_TAUX_TVA)))
-            .andExpect(jsonPath("$.[*].montantTva").value(hasItem(DEFAULT_MONTANT_TVA)))
-            .andExpect(jsonPath("$.[*].montantTtc").value(hasItem(DEFAULT_MONTANT_TTC)))
-            .andExpect(jsonPath("$.[*].devise").value(hasItem(DEFAULT_DEVISE.toString())))
-            .andExpect(jsonPath("$.[*].tauxChangeCfa").value(hasItem(DEFAULT_TAUX_CHANGE_CFA)))
-            .andExpect(jsonPath("$.[*].statut").value(hasItem(DEFAULT_STATUT.toString())))
-            .andExpect(jsonPath("$.[*].notes").value(hasItem(DEFAULT_NOTES)))
-            .andExpect(jsonPath("$.[*].cheminPdf").value(hasItem(DEFAULT_CHEMIN_PDF)))
-            .andExpect(jsonPath("$.[*].creeParLogin").value(hasItem(DEFAULT_CREE_PAR_LOGIN)));
+                .perform(get(ENTITY_API_URL + "?sort=id,desc&" + filter))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(jsonPath("$.[*].id").value(hasItem(facture.getId().intValue())))
+                .andExpect(jsonPath("$.[*].numero").value(hasItem(DEFAULT_NUMERO)))
+                .andExpect(jsonPath("$.[*].dateEmission").value(hasItem(DEFAULT_DATE_EMISSION.toString())))
+                .andExpect(jsonPath("$.[*].datePaiement").value(hasItem(DEFAULT_DATE_PAIEMENT.toString())))
+                .andExpect(jsonPath("$.[*].volumeM3").value(hasItem(DEFAULT_VOLUME_M_3)))
+                .andExpect(jsonPath("$.[*].montantBaseHt").value(hasItem(DEFAULT_MONTANT_BASE_HT)))
+                .andExpect(jsonPath("$.[*].montantSupplementsHt").value(hasItem(DEFAULT_MONTANT_SUPPLEMENTS_HT)))
+                .andExpect(jsonPath("$.[*].montantHt").value(hasItem(DEFAULT_MONTANT_HT)))
+                .andExpect(jsonPath("$.[*].tauxTva").value(hasItem(DEFAULT_TAUX_TVA)))
+                .andExpect(jsonPath("$.[*].montantTva").value(hasItem(DEFAULT_MONTANT_TVA)))
+                .andExpect(jsonPath("$.[*].montantTtc").value(hasItem(DEFAULT_MONTANT_TTC)))
+                .andExpect(jsonPath("$.[*].devise").value(hasItem(DEFAULT_DEVISE.toString())))
+                .andExpect(jsonPath("$.[*].tauxChangeCfa").value(hasItem(DEFAULT_TAUX_CHANGE_CFA)))
+                .andExpect(jsonPath("$.[*].statut").value(hasItem(DEFAULT_STATUT.toString())))
+                .andExpect(jsonPath("$.[*].notes").value(hasItem(DEFAULT_NOTES)))
+                .andExpect(jsonPath("$.[*].cheminPdf").value(hasItem(DEFAULT_CHEMIN_PDF)))
+                .andExpect(jsonPath("$.[*].creeParLogin").value(hasItem(DEFAULT_CREE_PAR_LOGIN)));
 
         // Check, that the count call also returns 1
         restFactureMockMvc
-            .perform(get(ENTITY_API_URL + "/count?sort=id,desc&" + filter))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(content().string("1"));
+                .perform(get(ENTITY_API_URL + "/count?sort=id,desc&" + filter))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(content().string("1"));
     }
 
     /**
@@ -1686,18 +1709,18 @@ class FactureResourceIT {
      */
     private void defaultFactureShouldNotBeFound(String filter) throws Exception {
         restFactureMockMvc
-            .perform(get(ENTITY_API_URL + "?sort=id,desc&" + filter))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(jsonPath("$").isArray())
-            .andExpect(jsonPath("$").isEmpty());
+                .perform(get(ENTITY_API_URL + "?sort=id,desc&" + filter))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$").isEmpty());
 
         // Check, that the count call also returns 0
         restFactureMockMvc
-            .perform(get(ENTITY_API_URL + "/count?sort=id,desc&" + filter))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(content().string("0"));
+                .perform(get(ENTITY_API_URL + "/count?sort=id,desc&" + filter))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(content().string("0"));
     }
 
     @Test
@@ -1717,32 +1740,33 @@ class FactureResourceIT {
 
         // Update the facture
         Facture updatedFacture = factureRepository.findById(facture.getId()).orElseThrow();
-        // Disconnect from session so that the updates on updatedFacture are not directly saved in db
+        // Disconnect from session so that the updates on updatedFacture are not
+        // directly saved in db
         em.detach(updatedFacture);
         updatedFacture
-            .numero(UPDATED_NUMERO)
-            .dateEmission(UPDATED_DATE_EMISSION)
-            .datePaiement(UPDATED_DATE_PAIEMENT)
-            .volumeM3(UPDATED_VOLUME_M_3)
-            .montantBaseHt(UPDATED_MONTANT_BASE_HT)
-            .montantSupplementsHt(UPDATED_MONTANT_SUPPLEMENTS_HT)
-            .montantHt(UPDATED_MONTANT_HT)
-            .tauxTva(UPDATED_TAUX_TVA)
-            .montantTva(UPDATED_MONTANT_TVA)
-            .montantTtc(UPDATED_MONTANT_TTC)
-            .devise(UPDATED_DEVISE)
-            .tauxChangeCfa(UPDATED_TAUX_CHANGE_CFA)
-            .statut(UPDATED_STATUT)
-            .notes(UPDATED_NOTES)
-            .cheminPdf(UPDATED_CHEMIN_PDF)
-            .creeParLogin(UPDATED_CREE_PAR_LOGIN);
+                .numero(UPDATED_NUMERO)
+                .dateEmission(UPDATED_DATE_EMISSION)
+                .datePaiement(UPDATED_DATE_PAIEMENT)
+                .volumeM3(UPDATED_VOLUME_M_3)
+                .montantBaseHt(UPDATED_MONTANT_BASE_HT)
+                .montantSupplementsHt(UPDATED_MONTANT_SUPPLEMENTS_HT)
+                .montantHt(UPDATED_MONTANT_HT)
+                .tauxTva(UPDATED_TAUX_TVA)
+                .montantTva(UPDATED_MONTANT_TVA)
+                .montantTtc(UPDATED_MONTANT_TTC)
+                .devise(UPDATED_DEVISE)
+                .tauxChangeCfa(UPDATED_TAUX_CHANGE_CFA)
+                .statut(UPDATED_STATUT)
+                .notes(UPDATED_NOTES)
+                .cheminPdf(UPDATED_CHEMIN_PDF)
+                .creeParLogin(UPDATED_CREE_PAR_LOGIN);
         FactureDTO factureDTO = factureMapper.toDto(updatedFacture);
 
         restFactureMockMvc
-            .perform(
-                put(ENTITY_API_URL_ID, factureDTO.getId()).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(factureDTO))
-            )
-            .andExpect(status().isOk());
+                .perform(
+                        put(ENTITY_API_URL_ID, factureDTO.getId()).contentType(MediaType.APPLICATION_JSON)
+                                .content(om.writeValueAsBytes(factureDTO)))
+                .andExpect(status().isOk());
 
         // Validate the Facture in the database
         assertSameRepositoryCount(databaseSizeBeforeUpdate);
@@ -1760,10 +1784,10 @@ class FactureResourceIT {
 
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restFactureMockMvc
-            .perform(
-                put(ENTITY_API_URL_ID, factureDTO.getId()).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(factureDTO))
-            )
-            .andExpect(status().isBadRequest());
+                .perform(
+                        put(ENTITY_API_URL_ID, factureDTO.getId()).contentType(MediaType.APPLICATION_JSON)
+                                .content(om.writeValueAsBytes(factureDTO)))
+                .andExpect(status().isBadRequest());
 
         // Validate the Facture in the database
         assertSameRepositoryCount(databaseSizeBeforeUpdate);
@@ -1780,12 +1804,11 @@ class FactureResourceIT {
 
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restFactureMockMvc
-            .perform(
-                put(ENTITY_API_URL_ID, longCount.incrementAndGet())
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(om.writeValueAsBytes(factureDTO))
-            )
-            .andExpect(status().isBadRequest());
+                .perform(
+                        put(ENTITY_API_URL_ID, longCount.incrementAndGet())
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(om.writeValueAsBytes(factureDTO)))
+                .andExpect(status().isBadRequest());
 
         // Validate the Facture in the database
         assertSameRepositoryCount(databaseSizeBeforeUpdate);
@@ -1802,8 +1825,9 @@ class FactureResourceIT {
 
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restFactureMockMvc
-            .perform(put(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(factureDTO)))
-            .andExpect(status().isMethodNotAllowed());
+                .perform(put(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON)
+                        .content(om.writeValueAsBytes(factureDTO)))
+                .andExpect(status().isMethodNotAllowed());
 
         // Validate the Facture in the database
         assertSameRepositoryCount(databaseSizeBeforeUpdate);
@@ -1822,28 +1846,28 @@ class FactureResourceIT {
         partialUpdatedFacture.setId(facture.getId());
 
         partialUpdatedFacture
-            .dateEmission(UPDATED_DATE_EMISSION)
-            .volumeM3(UPDATED_VOLUME_M_3)
-            .montantBaseHt(UPDATED_MONTANT_BASE_HT)
-            .tauxTva(UPDATED_TAUX_TVA)
-            .tauxChangeCfa(UPDATED_TAUX_CHANGE_CFA)
-            .statut(UPDATED_STATUT)
-            .notes(UPDATED_NOTES)
-            .cheminPdf(UPDATED_CHEMIN_PDF)
-            .creeParLogin(UPDATED_CREE_PAR_LOGIN);
+                .dateEmission(UPDATED_DATE_EMISSION)
+                .volumeM3(UPDATED_VOLUME_M_3)
+                .montantBaseHt(UPDATED_MONTANT_BASE_HT)
+                .tauxTva(UPDATED_TAUX_TVA)
+                .tauxChangeCfa(UPDATED_TAUX_CHANGE_CFA)
+                .statut(UPDATED_STATUT)
+                .notes(UPDATED_NOTES)
+                .cheminPdf(UPDATED_CHEMIN_PDF)
+                .creeParLogin(UPDATED_CREE_PAR_LOGIN);
 
         restFactureMockMvc
-            .perform(
-                patch(ENTITY_API_URL_ID, partialUpdatedFacture.getId())
-                    .contentType("application/merge-patch+json")
-                    .content(om.writeValueAsBytes(partialUpdatedFacture))
-            )
-            .andExpect(status().isOk());
+                .perform(
+                        patch(ENTITY_API_URL_ID, partialUpdatedFacture.getId())
+                                .contentType("application/merge-patch+json")
+                                .content(om.writeValueAsBytes(partialUpdatedFacture)))
+                .andExpect(status().isOk());
 
         // Validate the Facture in the database
 
         assertSameRepositoryCount(databaseSizeBeforeUpdate);
-        assertFactureUpdatableFieldsEquals(createUpdateProxyForBean(partialUpdatedFacture, facture), getPersistedFacture(facture));
+        assertFactureUpdatableFieldsEquals(createUpdateProxyForBean(partialUpdatedFacture, facture),
+                getPersistedFacture(facture));
     }
 
     @Test
@@ -1859,30 +1883,29 @@ class FactureResourceIT {
         partialUpdatedFacture.setId(facture.getId());
 
         partialUpdatedFacture
-            .numero(UPDATED_NUMERO)
-            .dateEmission(UPDATED_DATE_EMISSION)
-            .datePaiement(UPDATED_DATE_PAIEMENT)
-            .volumeM3(UPDATED_VOLUME_M_3)
-            .montantBaseHt(UPDATED_MONTANT_BASE_HT)
-            .montantSupplementsHt(UPDATED_MONTANT_SUPPLEMENTS_HT)
-            .montantHt(UPDATED_MONTANT_HT)
-            .tauxTva(UPDATED_TAUX_TVA)
-            .montantTva(UPDATED_MONTANT_TVA)
-            .montantTtc(UPDATED_MONTANT_TTC)
-            .devise(UPDATED_DEVISE)
-            .tauxChangeCfa(UPDATED_TAUX_CHANGE_CFA)
-            .statut(UPDATED_STATUT)
-            .notes(UPDATED_NOTES)
-            .cheminPdf(UPDATED_CHEMIN_PDF)
-            .creeParLogin(UPDATED_CREE_PAR_LOGIN);
+                .numero(UPDATED_NUMERO)
+                .dateEmission(UPDATED_DATE_EMISSION)
+                .datePaiement(UPDATED_DATE_PAIEMENT)
+                .volumeM3(UPDATED_VOLUME_M_3)
+                .montantBaseHt(UPDATED_MONTANT_BASE_HT)
+                .montantSupplementsHt(UPDATED_MONTANT_SUPPLEMENTS_HT)
+                .montantHt(UPDATED_MONTANT_HT)
+                .tauxTva(UPDATED_TAUX_TVA)
+                .montantTva(UPDATED_MONTANT_TVA)
+                .montantTtc(UPDATED_MONTANT_TTC)
+                .devise(UPDATED_DEVISE)
+                .tauxChangeCfa(UPDATED_TAUX_CHANGE_CFA)
+                .statut(UPDATED_STATUT)
+                .notes(UPDATED_NOTES)
+                .cheminPdf(UPDATED_CHEMIN_PDF)
+                .creeParLogin(UPDATED_CREE_PAR_LOGIN);
 
         restFactureMockMvc
-            .perform(
-                patch(ENTITY_API_URL_ID, partialUpdatedFacture.getId())
-                    .contentType("application/merge-patch+json")
-                    .content(om.writeValueAsBytes(partialUpdatedFacture))
-            )
-            .andExpect(status().isOk());
+                .perform(
+                        patch(ENTITY_API_URL_ID, partialUpdatedFacture.getId())
+                                .contentType("application/merge-patch+json")
+                                .content(om.writeValueAsBytes(partialUpdatedFacture)))
+                .andExpect(status().isOk());
 
         // Validate the Facture in the database
 
@@ -1901,12 +1924,11 @@ class FactureResourceIT {
 
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restFactureMockMvc
-            .perform(
-                patch(ENTITY_API_URL_ID, factureDTO.getId())
-                    .contentType("application/merge-patch+json")
-                    .content(om.writeValueAsBytes(factureDTO))
-            )
-            .andExpect(status().isBadRequest());
+                .perform(
+                        patch(ENTITY_API_URL_ID, factureDTO.getId())
+                                .contentType("application/merge-patch+json")
+                                .content(om.writeValueAsBytes(factureDTO)))
+                .andExpect(status().isBadRequest());
 
         // Validate the Facture in the database
         assertSameRepositoryCount(databaseSizeBeforeUpdate);
@@ -1923,12 +1945,11 @@ class FactureResourceIT {
 
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restFactureMockMvc
-            .perform(
-                patch(ENTITY_API_URL_ID, longCount.incrementAndGet())
-                    .contentType("application/merge-patch+json")
-                    .content(om.writeValueAsBytes(factureDTO))
-            )
-            .andExpect(status().isBadRequest());
+                .perform(
+                        patch(ENTITY_API_URL_ID, longCount.incrementAndGet())
+                                .contentType("application/merge-patch+json")
+                                .content(om.writeValueAsBytes(factureDTO)))
+                .andExpect(status().isBadRequest());
 
         // Validate the Facture in the database
         assertSameRepositoryCount(databaseSizeBeforeUpdate);
@@ -1945,8 +1966,9 @@ class FactureResourceIT {
 
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restFactureMockMvc
-            .perform(patch(ENTITY_API_URL).contentType("application/merge-patch+json").content(om.writeValueAsBytes(factureDTO)))
-            .andExpect(status().isMethodNotAllowed());
+                .perform(patch(ENTITY_API_URL).contentType("application/merge-patch+json")
+                        .content(om.writeValueAsBytes(factureDTO)))
+                .andExpect(status().isMethodNotAllowed());
 
         // Validate the Facture in the database
         assertSameRepositoryCount(databaseSizeBeforeUpdate);
@@ -1962,8 +1984,8 @@ class FactureResourceIT {
 
         // Delete the facture
         restFactureMockMvc
-            .perform(delete(ENTITY_API_URL_ID, facture.getId()).accept(MediaType.APPLICATION_JSON))
-            .andExpect(status().isNoContent());
+                .perform(delete(ENTITY_API_URL_ID, facture.getId()).accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent());
 
         // Validate the database contains one less item
         assertDecrementedRepositoryCount(databaseSizeBeforeDelete);

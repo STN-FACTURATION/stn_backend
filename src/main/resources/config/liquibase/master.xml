@@ -29,4 +29,5 @@
     <include file="config/liquibase/changelog/20260422152608_added_entity_constraints_Mouvement.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
     <!-- jhipster-needle-liquibase-add-incremental-changelog - JHipster will add incremental liquibase changelogs here -->
+    <include file="config/liquibase/changelog/20260426230500_alter_facture_date_emission_type.xml" relativeToChangelogFile="false"/>
 </databaseChangeLog>

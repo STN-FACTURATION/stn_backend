@@ -10,12 +10,15 @@ import tech.jhipster.service.Criteria;
 import tech.jhipster.service.filter.*;
 
 /**
- * Criteria class for the {@link sn.stn.facturation.domain.Facture} entity. This class is used
- * in {@link sn.stn.facturation.web.rest.FactureResource} to receive all the possible filtering options from
+ * Criteria class for the {@link sn.stn.facturation.domain.Facture} entity. This
+ * class is used
+ * in {@link sn.stn.facturation.web.rest.FactureResource} to receive all the
+ * possible filtering options from
  * the Http GET request parameters.
  * For example the following could be a valid request:
  * {@code /factures?id.greaterThan=5&attr1.contains=something&attr2.specified=false}
- * As Spring is unable to properly convert the types, unless specific {@link Filter} class are used, we need to use
+ * As Spring is unable to properly convert the types, unless specific
+ * {@link Filter} class are used, we need to use
  * fix type specific filters.
  */
 @ParameterObject
@@ -27,7 +30,8 @@ public class FactureCriteria implements Serializable, Criteria {
      */
     public static class DeviseFactureFilter extends Filter<DeviseFacture> {
 
-        public DeviseFactureFilter() {}
+        public DeviseFactureFilter() {
+        }
 
         public DeviseFactureFilter(DeviseFactureFilter filter) {
             super(filter);
@@ -44,7 +48,8 @@ public class FactureCriteria implements Serializable, Criteria {
      */
     public static class StatutFactureFilter extends Filter<StatutFacture> {
 
-        public StatutFactureFilter() {}
+        public StatutFactureFilter() {
+        }
 
         public StatutFactureFilter(StatutFactureFilter filter) {
             super(filter);
@@ -62,7 +67,7 @@ public class FactureCriteria implements Serializable, Criteria {
 
     private StringFilter numero;
 
-    private LocalDateFilter dateEmission;
+    private InstantFilter dateEmission;
 
     private LocalDateFilter datePaiement;
 
@@ -102,12 +107,13 @@ public class FactureCriteria implements Serializable, Criteria {
 
     private Boolean distinct;
 
-    public FactureCriteria() {}
+    public FactureCriteria() {
+    }
 
     public FactureCriteria(FactureCriteria other) {
         this.id = other.optionalId().map(LongFilter::copy).orElse(null);
         this.numero = other.optionalNumero().map(StringFilter::copy).orElse(null);
-        this.dateEmission = other.optionalDateEmission().map(LocalDateFilter::copy).orElse(null);
+        this.dateEmission = other.optionalDateEmission().map(InstantFilter::copy).orElse(null);
         this.datePaiement = other.optionalDatePaiement().map(LocalDateFilter::copy).orElse(null);
         this.volumeM3 = other.optionalVolumeM3().map(DoubleFilter::copy).orElse(null);
         this.montantBaseHt = other.optionalMontantBaseHt().map(DoubleFilter::copy).orElse(null);
@@ -172,22 +178,22 @@ public class FactureCriteria implements Serializable, Criteria {
         this.numero = numero;
     }
 
-    public LocalDateFilter getDateEmission() {
+    public InstantFilter getDateEmission() {
         return dateEmission;
     }
 
-    public Optional<LocalDateFilter> optionalDateEmission() {
+    public Optional<InstantFilter> optionalDateEmission() {
         return Optional.ofNullable(dateEmission);
     }
 
-    public LocalDateFilter dateEmission() {
+    public InstantFilter dateEmission() {
         if (dateEmission == null) {
-            setDateEmission(new LocalDateFilter());
+            setDateEmission(new InstantFilter());
         }
         return dateEmission;
     }
 
-    public void setDateEmission(LocalDateFilter dateEmission) {
+    public void setDateEmission(InstantFilter dateEmission) {
         this.dateEmission = dateEmission;
     }
 
@@ -561,86 +567,83 @@ public class FactureCriteria implements Serializable, Criteria {
             return false;
         }
         final FactureCriteria that = (FactureCriteria) o;
-        return (
-            Objects.equals(id, that.id) &&
-            Objects.equals(numero, that.numero) &&
-            Objects.equals(dateEmission, that.dateEmission) &&
-            Objects.equals(datePaiement, that.datePaiement) &&
-            Objects.equals(volumeM3, that.volumeM3) &&
-            Objects.equals(montantBaseHt, that.montantBaseHt) &&
-            Objects.equals(montantSupplementsHt, that.montantSupplementsHt) &&
-            Objects.equals(montantHt, that.montantHt) &&
-            Objects.equals(tauxTva, that.tauxTva) &&
-            Objects.equals(montantTva, that.montantTva) &&
-            Objects.equals(montantTtc, that.montantTtc) &&
-            Objects.equals(devise, that.devise) &&
-            Objects.equals(tauxChangeCfa, that.tauxChangeCfa) &&
-            Objects.equals(statut, that.statut) &&
-            Objects.equals(notes, that.notes) &&
-            Objects.equals(cheminPdf, that.cheminPdf) &&
-            Objects.equals(creeParLogin, that.creeParLogin) &&
-            Objects.equals(mouvementsId, that.mouvementsId) &&
-            Objects.equals(supplementsId, that.supplementsId) &&
-            Objects.equals(navireId, that.navireId) &&
-            Objects.equals(clientId, that.clientId) &&
-            Objects.equals(distinct, that.distinct)
-        );
+        return (Objects.equals(id, that.id) &&
+                Objects.equals(numero, that.numero) &&
+                Objects.equals(dateEmission, that.dateEmission) &&
+                Objects.equals(datePaiement, that.datePaiement) &&
+                Objects.equals(volumeM3, that.volumeM3) &&
+                Objects.equals(montantBaseHt, that.montantBaseHt) &&
+                Objects.equals(montantSupplementsHt, that.montantSupplementsHt) &&
+                Objects.equals(montantHt, that.montantHt) &&
+                Objects.equals(tauxTva, that.tauxTva) &&
+                Objects.equals(montantTva, that.montantTva) &&
+                Objects.equals(montantTtc, that.montantTtc) &&
+                Objects.equals(devise, that.devise) &&
+                Objects.equals(tauxChangeCfa, that.tauxChangeCfa) &&
+                Objects.equals(statut, that.statut) &&
+                Objects.equals(notes, that.notes) &&
+                Objects.equals(cheminPdf, that.cheminPdf) &&
+                Objects.equals(creeParLogin, that.creeParLogin) &&
+                Objects.equals(mouvementsId, that.mouvementsId) &&
+                Objects.equals(supplementsId, that.supplementsId) &&
+                Objects.equals(navireId, that.navireId) &&
+                Objects.equals(clientId, that.clientId) &&
+                Objects.equals(distinct, that.distinct));
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(
-            id,
-            numero,
-            dateEmission,
-            datePaiement,
-            volumeM3,
-            montantBaseHt,
-            montantSupplementsHt,
-            montantHt,
-            tauxTva,
-            montantTva,
-            montantTtc,
-            devise,
-            tauxChangeCfa,
-            statut,
-            notes,
-            cheminPdf,
-            creeParLogin,
-            mouvementsId,
-            supplementsId,
-            navireId,
-            clientId,
-            distinct
-        );
+                id,
+                numero,
+                dateEmission,
+                datePaiement,
+                volumeM3,
+                montantBaseHt,
+                montantSupplementsHt,
+                montantHt,
+                tauxTva,
+                montantTva,
+                montantTtc,
+                devise,
+                tauxChangeCfa,
+                statut,
+                notes,
+                cheminPdf,
+                creeParLogin,
+                mouvementsId,
+                supplementsId,
+                navireId,
+                clientId,
+                distinct);
     }
 
     // prettier-ignore
     @Override
     public String toString() {
         return "FactureCriteria{" +
-            optionalId().map(f -> "id=" + f + ", ").orElse("") +
-            optionalNumero().map(f -> "numero=" + f + ", ").orElse("") +
-            optionalDateEmission().map(f -> "dateEmission=" + f + ", ").orElse("") +
-            optionalDatePaiement().map(f -> "datePaiement=" + f + ", ").orElse("") +
-            optionalVolumeM3().map(f -> "volumeM3=" + f + ", ").orElse("") +
-            optionalMontantBaseHt().map(f -> "montantBaseHt=" + f + ", ").orElse("") +
-            optionalMontantSupplementsHt().map(f -> "montantSupplementsHt=" + f + ", ").orElse("") +
-            optionalMontantHt().map(f -> "montantHt=" + f + ", ").orElse("") +
-            optionalTauxTva().map(f -> "tauxTva=" + f + ", ").orElse("") +
-            optionalMontantTva().map(f -> "montantTva=" + f + ", ").orElse("") +
-            optionalMontantTtc().map(f -> "montantTtc=" + f + ", ").orElse("") +
-            optionalDevise().map(f -> "devise=" + f + ", ").orElse("") +
-            optionalTauxChangeCfa().map(f -> "tauxChangeCfa=" + f + ", ").orElse("") +
-            optionalStatut().map(f -> "statut=" + f + ", ").orElse("") +
-            optionalNotes().map(f -> "notes=" + f + ", ").orElse("") +
-            optionalCheminPdf().map(f -> "cheminPdf=" + f + ", ").orElse("") +
-            optionalCreeParLogin().map(f -> "creeParLogin=" + f + ", ").orElse("") +
-            optionalMouvementsId().map(f -> "mouvementsId=" + f + ", ").orElse("") +
-            optionalSupplementsId().map(f -> "supplementsId=" + f + ", ").orElse("") +
-            optionalNavireId().map(f -> "navireId=" + f + ", ").orElse("") +
-            optionalClientId().map(f -> "clientId=" + f + ", ").orElse("") +
-            optionalDistinct().map(f -> "distinct=" + f + ", ").orElse("") +
-        "}";
+                optionalId().map(f -> "id=" + f + ", ").orElse("") +
+                optionalNumero().map(f -> "numero=" + f + ", ").orElse("") +
+                optionalDateEmission().map(f -> "dateEmission=" + f + ", ").orElse("") +
+                optionalDatePaiement().map(f -> "datePaiement=" + f + ", ").orElse("") +
+                optionalVolumeM3().map(f -> "volumeM3=" + f + ", ").orElse("") +
+                optionalMontantBaseHt().map(f -> "montantBaseHt=" + f + ", ").orElse("") +
+                optionalMontantSupplementsHt().map(f -> "montantSupplementsHt=" + f + ", ").orElse("") +
+                optionalMontantHt().map(f -> "montantHt=" + f + ", ").orElse("") +
+                optionalTauxTva().map(f -> "tauxTva=" + f + ", ").orElse("") +
+                optionalMontantTva().map(f -> "montantTva=" + f + ", ").orElse("") +
+                optionalMontantTtc().map(f -> "montantTtc=" + f + ", ").orElse("") +
+                optionalDevise().map(f -> "devise=" + f + ", ").orElse("") +
+                optionalTauxChangeCfa().map(f -> "tauxChangeCfa=" + f + ", ").orElse("") +
+                optionalStatut().map(f -> "statut=" + f + ", ").orElse("") +
+                optionalNotes().map(f -> "notes=" + f + ", ").orElse("") +
+                optionalCheminPdf().map(f -> "cheminPdf=" + f + ", ").orElse("") +
+                optionalCreeParLogin().map(f -> "creeParLogin=" + f + ", ").orElse("") +
+                optionalMouvementsId().map(f -> "mouvementsId=" + f + ", ").orElse("") +
+                optionalSupplementsId().map(f -> "supplementsId=" + f + ", ").orElse("") +
+                optionalNavireId().map(f -> "navireId=" + f + ", ").orElse("") +
+                optionalClientId().map(f -> "clientId=" + f + ", ").orElse("") +
+                optionalDistinct().map(f -> "distinct=" + f + ", ").orElse("") +
+                "}";
     }
 }

@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.*;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.Instant;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -23,7 +24,7 @@ public class FactureDTO implements Serializable {
     private String numero;
 
     @NotNull
-    private LocalDate dateEmission;
+    private Instant dateEmission;
 
     private LocalDate datePaiement;
 
@@ -100,11 +101,11 @@ public class FactureDTO implements Serializable {
         this.numero = numero;
     }
 
-    public LocalDate getDateEmission() {
+    public Instant getDateEmission() {
         return dateEmission;
     }
 
-    public void setDateEmission(LocalDate dateEmission) {
+    public void setDateEmission(Instant dateEmission) {
         this.dateEmission = dateEmission;
     }
 
