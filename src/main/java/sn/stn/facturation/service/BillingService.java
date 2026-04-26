@@ -104,7 +104,15 @@ public class BillingService {
                     .sum();
         }
 
-        facture.setMontantBaseHt(totalMouvements);
+        double baseTarif = 0.0;
+        if (facture.getNavire() != null && facture.getNavire().getJaugeBrute() != null) {
+            Optional<Tarif> tarifOpt = tarifRepository.findActiveTarifForVolume(facture.getNavire().getJaugeBrute());
+            if (tarifOpt.isPresent()) {
+                baseTarif = tarifOpt.get().getPrixEuro();
+            }
+        }
+
+        facture.setMontantBaseHt(baseTarif);
         facture.setMontantSupplementsHt(totalSupplements);
         facture.setMontantHt(totalMouvements + totalSupplements);
 
