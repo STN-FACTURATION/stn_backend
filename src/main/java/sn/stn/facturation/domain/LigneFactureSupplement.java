@@ -38,7 +38,7 @@ public class LigneFactureSupplement implements Serializable {
 
     @ManyToOne(optional = false)
     @NotNull
-    @JsonIgnoreProperties(value = { "supplements", "navire", "client" }, allowSetters = true)
+    @JsonIgnoreProperties(value = { "mouvements", "supplements", "navire", "client" }, allowSetters = true)
     private Facture facture;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here

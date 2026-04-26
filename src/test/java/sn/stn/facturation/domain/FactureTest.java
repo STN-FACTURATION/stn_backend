@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static sn.stn.facturation.domain.ClientTestSamples.*;
 import static sn.stn.facturation.domain.FactureTestSamples.*;
 import static sn.stn.facturation.domain.LigneFactureSupplementTestSamples.*;
+import static sn.stn.facturation.domain.MouvementTestSamples.*;
 import static sn.stn.facturation.domain.NavireTestSamples.*;
 
 import java.util.HashSet;
@@ -25,6 +26,28 @@ class FactureTest {
 
         facture2 = getFactureSample2();
         assertThat(facture1).isNotEqualTo(facture2);
+    }
+
+    @Test
+    void mouvementsTest() {
+        Facture facture = getFactureRandomSampleGenerator();
+        Mouvement mouvementBack = getMouvementRandomSampleGenerator();
+
+        facture.addMouvements(mouvementBack);
+        assertThat(facture.getMouvements()).containsOnly(mouvementBack);
+        assertThat(mouvementBack.getFacture()).isEqualTo(facture);
+
+        facture.removeMouvements(mouvementBack);
+        assertThat(facture.getMouvements()).doesNotContain(mouvementBack);
+        assertThat(mouvementBack.getFacture()).isNull();
+
+        facture.mouvements(new HashSet<>(Set.of(mouvementBack)));
+        assertThat(facture.getMouvements()).containsOnly(mouvementBack);
+        assertThat(mouvementBack.getFacture()).isEqualTo(facture);
+
+        facture.setMouvements(new HashSet<>());
+        assertThat(facture.getMouvements()).doesNotContain(mouvementBack);
+        assertThat(mouvementBack.getFacture()).isNull();
     }
 
     @Test

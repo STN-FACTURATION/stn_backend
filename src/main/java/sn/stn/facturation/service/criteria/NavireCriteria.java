@@ -40,8 +40,6 @@ public class NavireCriteria implements Serializable, Criteria {
 
     private BooleanFilter actif;
 
-    private LongFilter clientId;
-
     private Boolean distinct;
 
     public NavireCriteria() {}
@@ -56,7 +54,6 @@ public class NavireCriteria implements Serializable, Criteria {
         this.tirant = other.optionalTirant().map(DoubleFilter::copy).orElse(null);
         this.pavillon = other.optionalPavillon().map(StringFilter::copy).orElse(null);
         this.actif = other.optionalActif().map(BooleanFilter::copy).orElse(null);
-        this.clientId = other.optionalClientId().map(LongFilter::copy).orElse(null);
         this.distinct = other.distinct;
     }
 
@@ -236,25 +233,6 @@ public class NavireCriteria implements Serializable, Criteria {
         this.actif = actif;
     }
 
-    public LongFilter getClientId() {
-        return clientId;
-    }
-
-    public Optional<LongFilter> optionalClientId() {
-        return Optional.ofNullable(clientId);
-    }
-
-    public LongFilter clientId() {
-        if (clientId == null) {
-            setClientId(new LongFilter());
-        }
-        return clientId;
-    }
-
-    public void setClientId(LongFilter clientId) {
-        this.clientId = clientId;
-    }
-
     public Boolean getDistinct() {
         return distinct;
     }
@@ -293,14 +271,13 @@ public class NavireCriteria implements Serializable, Criteria {
             Objects.equals(tirant, that.tirant) &&
             Objects.equals(pavillon, that.pavillon) &&
             Objects.equals(actif, that.actif) &&
-            Objects.equals(clientId, that.clientId) &&
             Objects.equals(distinct, that.distinct)
         );
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, nom, numeroImo, jaugeBrute, longueur, largeur, tirant, pavillon, actif, clientId, distinct);
+        return Objects.hash(id, nom, numeroImo, jaugeBrute, longueur, largeur, tirant, pavillon, actif, distinct);
     }
 
     // prettier-ignore
@@ -316,7 +293,6 @@ public class NavireCriteria implements Serializable, Criteria {
             optionalTirant().map(f -> "tirant=" + f + ", ").orElse("") +
             optionalPavillon().map(f -> "pavillon=" + f + ", ").orElse("") +
             optionalActif().map(f -> "actif=" + f + ", ").orElse("") +
-            optionalClientId().map(f -> "clientId=" + f + ", ").orElse("") +
             optionalDistinct().map(f -> "distinct=" + f + ", ").orElse("") +
         "}";
     }

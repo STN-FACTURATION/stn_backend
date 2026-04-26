@@ -1,6 +1,5 @@
 package sn.stn.facturation.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import java.io.Serializable;
@@ -8,7 +7,7 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 /**
- * Navire appartenant à un client
+ * Navire
  */
 @Entity
 @Table(name = "navire")
@@ -56,11 +55,6 @@ public class Navire implements Serializable {
     @NotNull
     @Column(name = "actif", nullable = false)
     private Boolean actif;
-
-    @ManyToOne(optional = false)
-    @NotNull
-    @JsonIgnoreProperties(value = { "navires", "factures" }, allowSetters = true)
-    private Client client;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -179,19 +173,6 @@ public class Navire implements Serializable {
 
     public void setActif(Boolean actif) {
         this.actif = actif;
-    }
-
-    public Client getClient() {
-        return this.client;
-    }
-
-    public void setClient(Client client) {
-        this.client = client;
-    }
-
-    public Navire client(Client client) {
-        this.setClient(client);
-        return this;
     }
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here

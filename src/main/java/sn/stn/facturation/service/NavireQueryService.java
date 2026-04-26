@@ -1,6 +1,5 @@
 package sn.stn.facturation.service;
 
-import jakarta.persistence.criteria.JoinType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -81,8 +80,7 @@ public class NavireQueryService extends QueryService<Navire> {
                 buildRangeSpecification(criteria.getLargeur(), Navire_.largeur),
                 buildRangeSpecification(criteria.getTirant(), Navire_.tirant),
                 buildStringSpecification(criteria.getPavillon(), Navire_.pavillon),
-                buildSpecification(criteria.getActif(), Navire_.actif),
-                buildSpecification(criteria.getClientId(), root -> root.join(Navire_.client, JoinType.LEFT).get(Client_.id))
+                buildSpecification(criteria.getActif(), Navire_.actif)
             );
         }
         return specification;

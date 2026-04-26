@@ -92,6 +92,8 @@ public class FactureCriteria implements Serializable, Criteria {
 
     private StringFilter creeParLogin;
 
+    private LongFilter mouvementsId;
+
     private LongFilter supplementsId;
 
     private LongFilter navireId;
@@ -120,6 +122,7 @@ public class FactureCriteria implements Serializable, Criteria {
         this.notes = other.optionalNotes().map(StringFilter::copy).orElse(null);
         this.cheminPdf = other.optionalCheminPdf().map(StringFilter::copy).orElse(null);
         this.creeParLogin = other.optionalCreeParLogin().map(StringFilter::copy).orElse(null);
+        this.mouvementsId = other.optionalMouvementsId().map(LongFilter::copy).orElse(null);
         this.supplementsId = other.optionalSupplementsId().map(LongFilter::copy).orElse(null);
         this.navireId = other.optionalNavireId().map(LongFilter::copy).orElse(null);
         this.clientId = other.optionalClientId().map(LongFilter::copy).orElse(null);
@@ -454,6 +457,25 @@ public class FactureCriteria implements Serializable, Criteria {
         this.creeParLogin = creeParLogin;
     }
 
+    public LongFilter getMouvementsId() {
+        return mouvementsId;
+    }
+
+    public Optional<LongFilter> optionalMouvementsId() {
+        return Optional.ofNullable(mouvementsId);
+    }
+
+    public LongFilter mouvementsId() {
+        if (mouvementsId == null) {
+            setMouvementsId(new LongFilter());
+        }
+        return mouvementsId;
+    }
+
+    public void setMouvementsId(LongFilter mouvementsId) {
+        this.mouvementsId = mouvementsId;
+    }
+
     public LongFilter getSupplementsId() {
         return supplementsId;
     }
@@ -557,6 +579,7 @@ public class FactureCriteria implements Serializable, Criteria {
             Objects.equals(notes, that.notes) &&
             Objects.equals(cheminPdf, that.cheminPdf) &&
             Objects.equals(creeParLogin, that.creeParLogin) &&
+            Objects.equals(mouvementsId, that.mouvementsId) &&
             Objects.equals(supplementsId, that.supplementsId) &&
             Objects.equals(navireId, that.navireId) &&
             Objects.equals(clientId, that.clientId) &&
@@ -584,6 +607,7 @@ public class FactureCriteria implements Serializable, Criteria {
             notes,
             cheminPdf,
             creeParLogin,
+            mouvementsId,
             supplementsId,
             navireId,
             clientId,
@@ -612,6 +636,7 @@ public class FactureCriteria implements Serializable, Criteria {
             optionalNotes().map(f -> "notes=" + f + ", ").orElse("") +
             optionalCheminPdf().map(f -> "cheminPdf=" + f + ", ").orElse("") +
             optionalCreeParLogin().map(f -> "creeParLogin=" + f + ", ").orElse("") +
+            optionalMouvementsId().map(f -> "mouvementsId=" + f + ", ").orElse("") +
             optionalSupplementsId().map(f -> "supplementsId=" + f + ", ").orElse("") +
             optionalNavireId().map(f -> "navireId=" + f + ", ").orElse("") +
             optionalClientId().map(f -> "clientId=" + f + ", ").orElse("") +

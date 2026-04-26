@@ -34,28 +34,26 @@ public class StnBackendApp {
     /**
      * Initializes stnBackend.
      * <p>
-     * Spring profiles can be configured with a program argument --spring.profiles.active=your-active-profile
+     * Spring profiles can be configured with a program argument
+     * --spring.profiles.active=your-active-profile
      * <p>
-     * You can find more information on how profiles work with JHipster on <a href="https://www.jhipster.tech/profiles/">https://www.jhipster.tech/profiles/</a>.
+     * You can find more information on how profiles work with JHipster on <a href=
+     * "https://www.jhipster.tech/profiles/">https://www.jhipster.tech/profiles/</a>.
      */
     @PostConstruct
     public void initApplication() {
         Collection<String> activeProfiles = Arrays.asList(env.getActiveProfiles());
-        if (
-            activeProfiles.contains(JHipsterConstants.SPRING_PROFILE_DEVELOPMENT) &&
-            activeProfiles.contains(JHipsterConstants.SPRING_PROFILE_PRODUCTION)
-        ) {
+        if (activeProfiles.contains(JHipsterConstants.SPRING_PROFILE_DEVELOPMENT) &&
+                activeProfiles.contains(JHipsterConstants.SPRING_PROFILE_PRODUCTION)) {
             LOG.error(
-                "You have misconfigured your application! It should not run " + "with both the 'dev' and 'prod' profiles at the same time."
-            );
+                    "You have misconfigured your application! It should not run "
+                            + "with both the 'dev' and 'prod' profiles at the same time.");
         }
-        if (
-            activeProfiles.contains(JHipsterConstants.SPRING_PROFILE_DEVELOPMENT) &&
-            activeProfiles.contains(JHipsterConstants.SPRING_PROFILE_CLOUD)
-        ) {
+        if (activeProfiles.contains(JHipsterConstants.SPRING_PROFILE_DEVELOPMENT) &&
+                activeProfiles.contains(JHipsterConstants.SPRING_PROFILE_CLOUD)) {
             LOG.error(
-                "You have misconfigured your application! It should not " + "run with both the 'dev' and 'cloud' profiles at the same time."
-            );
+                    "You have misconfigured your application! It should not "
+                            + "run with both the 'dev' and 'cloud' profiles at the same time.");
         }
     }
 
@@ -66,16 +64,16 @@ public class StnBackendApp {
      */
     public static void main(String[] args) {
         try {
-            // Workaround Hazelcast issue: https://github.com/hazelcast/hazelcast/issues/26361#issuecomment-2489778475
+            // Workaround Hazelcast issue:
+            // https://github.com/hazelcast/hazelcast/issues/26361#issuecomment-2489778475
             Class.forName(
-                "org.springframework.boot.devtools.autoconfigure.DevToolsProperties",
-                false,
-                SpringApplication.class.getClassLoader()
-            );
+                    "org.springframework.boot.devtools.autoconfigure.DevToolsProperties",
+                    false,
+                    SpringApplication.class.getClassLoader());
             System.setProperty("spring.devtools.restart.enabled", "false");
+            System.setProperty("spring.docker.compose.enabled", "false");
             LOG.warn(
-                "Spring Boot Developer Tools restart has been disabled using System property in order to prevent issues with Hazelcast"
-            );
+                    "Spring Boot Developer Tools restart and Docker Compose have been disabled using System properties");
         } catch (Exception e) {
             // Devtools not found, ignore
         }
@@ -87,12 +85,13 @@ public class StnBackendApp {
     }
 
     private static void logApplicationStartup(Environment env) {
-        String protocol = Optional.ofNullable(env.getProperty("server.ssl.key-store")).map(key -> "https").orElse("http");
+        String protocol = Optional.ofNullable(env.getProperty("server.ssl.key-store")).map(key -> "https")
+                .orElse("http");
         String applicationName = env.getProperty("spring.application.name");
         String serverPort = env.getProperty("server.port");
         String contextPath = Optional.ofNullable(env.getProperty("server.servlet.context-path"))
-            .filter(StringUtils::isNotBlank)
-            .orElse("/");
+                .filter(StringUtils::isNotBlank)
+                .orElse("/");
         String hostAddress = "localhost";
         try {
             hostAddress = InetAddress.getLocalHost().getHostAddress();
@@ -100,35 +99,33 @@ public class StnBackendApp {
             LOG.warn("The host name could not be determined, using `localhost` as fallback");
         }
         LOG.info(
-            CRLFLogConverter.CRLF_SAFE_MARKER,
-            """
+                CRLFLogConverter.CRLF_SAFE_MARKER,
+                """
 
-            ----------------------------------------------------------
-            \tApplication '{}' is running! Access URLs:
-            \tLocal: \t\t{}://localhost:{}{}
-            \tExternal: \t{}://{}:{}{}
-            \tProfile(s): \t{}
-            ----------------------------------------------------------""",
-            applicationName,
-            protocol,
-            serverPort,
-            contextPath,
-            protocol,
-            hostAddress,
-            serverPort,
-            contextPath,
-            env.getActiveProfiles().length == 0 ? env.getDefaultProfiles() : env.getActiveProfiles()
-        );
+                        ----------------------------------------------------------
+                        \tApplication '{}' is running! Access URLs:
+                        \tLocal: \t\t{}://localhost:{}{}
+                        \tExternal: \t{}://{}:{}{}
+                        \tProfile(s): \t{}
+                        ----------------------------------------------------------""",
+                applicationName,
+                protocol,
+                serverPort,
+                contextPath,
+                protocol,
+                hostAddress,
+                serverPort,
+                contextPath,
+                env.getActiveProfiles().length == 0 ? env.getDefaultProfiles() : env.getActiveProfiles());
 
         String configServerStatus = env.getProperty("configserver.status");
         if (configServerStatus == null) {
             configServerStatus = "Not found or not setup for this application";
         }
         LOG.info(
-            CRLFLogConverter.CRLF_SAFE_MARKER,
-            "\n----------------------------------------------------------\n\t" +
-            "Config Server: \t{}\n----------------------------------------------------------",
-            configServerStatus
-        );
+                CRLFLogConverter.CRLF_SAFE_MARKER,
+                "\n----------------------------------------------------------\n\t" +
+                        "Config Server: \t{}\n----------------------------------------------------------",
+                configServerStatus);
     }
 }

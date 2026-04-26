@@ -28,7 +28,6 @@ public class Facture implements Serializable {
     @Column(name = "id")
     private Long id;
 
-    @NotNull
     @Size(max = 50)
     @Column(name = "numero", length = 50, nullable = false, unique = true)
     private String numero;
@@ -108,6 +107,11 @@ public class Facture implements Serializable {
     @Column(name = "cree_par_login", length = 50)
     private String creeParLogin;
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "facture", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    @JsonIgnoreProperties(value = { "remorqueur", "facture" }, allowSetters = true)
+    private Set<Mouvement> mouvements = new HashSet<>();
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "facture")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @JsonIgnoreProperties(value = { "supplement", "facture" }, allowSetters = true)
@@ -115,12 +119,11 @@ public class Facture implements Serializable {
 
     @ManyToOne(optional = false)
     @NotNull
-    @JsonIgnoreProperties(value = { "client" }, allowSetters = true)
     private Navire navire;
 
     @ManyToOne(optional = false)
     @NotNull
-    @JsonIgnoreProperties(value = { "navires", "factures" }, allowSetters = true)
+    @JsonIgnoreProperties(value = { "factures" }, allowSetters = true)
     private Client client;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
@@ -346,6 +349,37 @@ public class Facture implements Serializable {
         this.creeParLogin = creeParLogin;
     }
 
+    public Set<Mouvement> getMouvements() {
+        return this.mouvements;
+    }
+
+    public void setMouvements(Set<Mouvement> mouvements) {
+        if (this.mouvements != null) {
+            this.mouvements.forEach(i -> i.setFacture(null));
+        }
+        if (mouvements != null) {
+            mouvements.forEach(i -> i.setFacture(this));
+        }
+        this.mouvements = mouvements;
+    }
+
+    public Facture mouvements(Set<Mouvement> mouvements) {
+        this.setMouvements(mouvements);
+        return this;
+    }
+
+    public Facture addMouvements(Mouvement mouvement) {
+        this.mouvements.add(mouvement);
+        mouvement.setFacture(this);
+        return this;
+    }
+
+    public Facture removeMouvements(Mouvement mouvement) {
+        this.mouvements.remove(mouvement);
+        mouvement.setFacture(null);
+        return this;
+    }
+
     public Set<LigneFactureSupplement> getSupplements() {
         return this.supplements;
     }
@@ -403,7 +437,8 @@ public class Facture implements Serializable {
         return this;
     }
 
-    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
+    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and
+    // setters here
 
     @Override
     public boolean equals(Object o) {
@@ -418,7 +453,8 @@ public class Facture implements Serializable {
 
     @Override
     public int hashCode() {
-        // see https://vladmihalcea.com/how-to-implement-equals-and-hashcode-using-the-jpa-entity-identifier/
+        // see
+        // https://vladmihalcea.com/how-to-implement-equals-and-hashcode-using-the-jpa-entity-identifier/
         return getClass().hashCode();
     }
 
@@ -426,23 +462,23 @@ public class Facture implements Serializable {
     @Override
     public String toString() {
         return "Facture{" +
-            "id=" + getId() +
-            ", numero='" + getNumero() + "'" +
-            ", dateEmission='" + getDateEmission() + "'" +
-            ", datePaiement='" + getDatePaiement() + "'" +
-            ", volumeM3=" + getVolumeM3() +
-            ", montantBaseHt=" + getMontantBaseHt() +
-            ", montantSupplementsHt=" + getMontantSupplementsHt() +
-            ", montantHt=" + getMontantHt() +
-            ", tauxTva=" + getTauxTva() +
-            ", montantTva=" + getMontantTva() +
-            ", montantTtc=" + getMontantTtc() +
-            ", devise='" + getDevise() + "'" +
-            ", tauxChangeCfa=" + getTauxChangeCfa() +
-            ", statut='" + getStatut() + "'" +
-            ", notes='" + getNotes() + "'" +
-            ", cheminPdf='" + getCheminPdf() + "'" +
-            ", creeParLogin='" + getCreeParLogin() + "'" +
-            "}";
+                "id=" + getId() +
+                ", numero='" + getNumero() + "'" +
+                ", dateEmission='" + getDateEmission() + "'" +
+                ", datePaiement='" + getDatePaiement() + "'" +
+                ", volumeM3=" + getVolumeM3() +
+                ", montantBaseHt=" + getMontantBaseHt() +
+                ", montantSupplementsHt=" + getMontantSupplementsHt() +
+                ", montantHt=" + getMontantHt() +
+                ", tauxTva=" + getTauxTva() +
+                ", montantTva=" + getMontantTva() +
+                ", montantTtc=" + getMontantTtc() +
+                ", devise='" + getDevise() + "'" +
+                ", tauxChangeCfa=" + getTauxChangeCfa() +
+                ", statut='" + getStatut() + "'" +
+                ", notes='" + getNotes() + "'" +
+                ", cheminPdf='" + getCheminPdf() + "'" +
+                ", creeParLogin='" + getCreeParLogin() + "'" +
+                "}";
     }
 }

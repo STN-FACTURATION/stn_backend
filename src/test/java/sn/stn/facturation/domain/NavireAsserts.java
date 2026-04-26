@@ -64,8 +64,6 @@ public class NavireAsserts {
      * @param actual the actual entity
      */
     public static void assertNavireUpdatableRelationshipsEquals(Navire expected, Navire actual) {
-        assertThat(actual)
-            .as("Verify Navire relationships")
-            .satisfies(a -> assertThat(a.getClient()).as("check client").isEqualTo(expected.getClient()));
+        // empty method
     }
 }

@@ -43,8 +43,8 @@ class ClientResourceIT {
     private static final String DEFAULT_ADRESSE = "AAAAAAAAAA";
     private static final String UPDATED_ADRESSE = "BBBBBBBBBB";
 
-    private static final String DEFAULT_EMAIL = "J!Hl@{2=.oKX{as";
-    private static final String UPDATED_EMAIL = "bxN@=.Md";
+    private static final String DEFAULT_EMAIL = "#]^@#CX&2F.o";
+    private static final String UPDATED_EMAIL = "waj@lfWw.bEH9";
 
     private static final String DEFAULT_TELEPHONE = "AAAAAAAAAA";
     private static final String UPDATED_TELEPHONE = "BBBBBBBBBB";
@@ -827,12 +827,7 @@ class ClientResourceIT {
         Client partialUpdatedClient = new Client();
         partialUpdatedClient.setId(client.getId());
 
-        partialUpdatedClient
-            .numero(UPDATED_NUMERO)
-            .email(UPDATED_EMAIL)
-            .telephone(UPDATED_TELEPHONE)
-            .pays(UPDATED_PAYS)
-            .actif(UPDATED_ACTIF);
+        partialUpdatedClient.adresse(UPDATED_ADRESSE).telephone(UPDATED_TELEPHONE).pays(UPDATED_PAYS).actif(UPDATED_ACTIF);
 
         restClientMockMvc
             .perform(

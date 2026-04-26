@@ -4,7 +4,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.*;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 import sn.stn.facturation.domain.enumeration.DeviseFacture;
 import sn.stn.facturation.domain.enumeration.StatutFacture;
 
@@ -17,7 +19,6 @@ public class FactureDTO implements Serializable {
 
     private Long id;
 
-    @NotNull
     @Size(max = 50)
     private String numero;
 
@@ -75,11 +76,11 @@ public class FactureDTO implements Serializable {
     @Schema(description = "login de l'utilisateur connecté")
     private String creeParLogin;
 
-    @NotNull
     private NavireDTO navire;
 
-    @NotNull
     private ClientDTO client;
+
+    private Set<MouvementDTO> mouvements = new HashSet<>();
 
     public Long getId() {
         return id;
@@ -233,6 +234,14 @@ public class FactureDTO implements Serializable {
         this.client = client;
     }
 
+    public Set<MouvementDTO> getMouvements() {
+        return mouvements;
+    }
+
+    public void setMouvements(Set<MouvementDTO> mouvements) {
+        this.mouvements = mouvements;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -258,25 +267,26 @@ public class FactureDTO implements Serializable {
     @Override
     public String toString() {
         return "FactureDTO{" +
-            "id=" + getId() +
-            ", numero='" + getNumero() + "'" +
-            ", dateEmission='" + getDateEmission() + "'" +
-            ", datePaiement='" + getDatePaiement() + "'" +
-            ", volumeM3=" + getVolumeM3() +
-            ", montantBaseHt=" + getMontantBaseHt() +
-            ", montantSupplementsHt=" + getMontantSupplementsHt() +
-            ", montantHt=" + getMontantHt() +
-            ", tauxTva=" + getTauxTva() +
-            ", montantTva=" + getMontantTva() +
-            ", montantTtc=" + getMontantTtc() +
-            ", devise='" + getDevise() + "'" +
-            ", tauxChangeCfa=" + getTauxChangeCfa() +
-            ", statut='" + getStatut() + "'" +
-            ", notes='" + getNotes() + "'" +
-            ", cheminPdf='" + getCheminPdf() + "'" +
-            ", creeParLogin='" + getCreeParLogin() + "'" +
-            ", navire=" + getNavire() +
-            ", client=" + getClient() +
-            "}";
+                "id=" + getId() +
+                ", numero='" + getNumero() + "'" +
+                ", dateEmission='" + getDateEmission() + "'" +
+                ", datePaiement='" + getDatePaiement() + "'" +
+                ", volumeM3=" + getVolumeM3() +
+                ", montantBaseHt=" + getMontantBaseHt() +
+                ", montantSupplementsHt=" + getMontantSupplementsHt() +
+                ", montantHt=" + getMontantHt() +
+                ", tauxTva=" + getTauxTva() +
+                ", montantTva=" + getMontantTva() +
+                ", montantTtc=" + getMontantTtc() +
+                ", devise='" + getDevise() + "'" +
+                ", tauxChangeCfa=" + getTauxChangeCfa() +
+                ", statut='" + getStatut() + "'" +
+                ", notes='" + getNotes() + "'" +
+                ", cheminPdf='" + getCheminPdf() + "'" +
+                ", creeParLogin='" + getCreeParLogin() + "'" +
+                ", navire=" + getNavire() +
+                ", client=" + getClient() +
+                ", mouvements=" + getMouvements() +
+                "}";
     }
 }

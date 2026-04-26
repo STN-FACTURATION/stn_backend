@@ -1,0 +1,43 @@
+{
+  "annotations": {
+    "changelogDate": "20260422152607"
+  },
+  "applications": "*",
+  "clientRootFolder": "stnBackend",
+  "databaseType": "sql",
+  "documentation": "Remorqueur STN",
+  "dto": "mapstruct",
+  "fields": [
+    {
+      "fieldName": "code",
+      "fieldType": "String",
+      "fieldValidateRules": ["required", "unique", "maxlength"],
+      "fieldValidateRulesMaxlength": "20"
+    },
+    {
+      "fieldName": "nom",
+      "fieldType": "String",
+      "fieldValidateRules": ["required", "maxlength"],
+      "fieldValidateRulesMaxlength": "100"
+    },
+    {
+      "fieldName": "statut",
+      "fieldType": "String",
+      "fieldValidateRules": ["maxlength"],
+      "fieldValidateRulesMaxlength": "50"
+    },
+    {
+      "fieldName": "observation",
+      "fieldType": "String",
+      "fieldValidateRules": ["maxlength"],
+      "fieldValidateRulesMaxlength": "500"
+    }
+  ],
+  "jpaMetamodelFiltering": true,
+  "microserviceName": "stnBackend",
+  "name": "Remorqueur",
+  "pagination": "pagination",
+  "relationships": [],
+  "searchEngine": "no",
+  "service": "serviceImpl"
+}

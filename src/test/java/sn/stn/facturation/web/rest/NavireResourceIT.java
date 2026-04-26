@@ -2,7 +2,6 @@ package sn.stn.facturation.web.rest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
-import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static sn.stn.facturation.domain.NavireAsserts.*;
@@ -10,28 +9,20 @@ import static sn.stn.facturation.web.rest.TestUtil.createUpdateProxyForBean;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityManager;
-import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 import sn.stn.facturation.IntegrationTest;
-import sn.stn.facturation.domain.Client;
 import sn.stn.facturation.domain.Navire;
 import sn.stn.facturation.repository.NavireRepository;
-import sn.stn.facturation.service.NavireService;
 import sn.stn.facturation.service.dto.NavireDTO;
 import sn.stn.facturation.service.mapper.NavireMapper;
 
@@ -39,7 +30,6 @@ import sn.stn.facturation.service.mapper.NavireMapper;
  * Integration tests for the {@link NavireResource} REST controller.
  */
 @IntegrationTest
-@ExtendWith(MockitoExtension.class)
 @AutoConfigureMockMvc
 @WithMockUser
 class NavireResourceIT {
@@ -84,14 +74,8 @@ class NavireResourceIT {
     @Autowired
     private NavireRepository navireRepository;
 
-    @Mock
-    private NavireRepository navireRepositoryMock;
-
     @Autowired
     private NavireMapper navireMapper;
-
-    @Mock
-    private NavireService navireServiceMock;
 
     @Autowired
     private EntityManager em;
@@ -109,8 +93,8 @@ class NavireResourceIT {
      * This is a static method, as tests for other entities might also need it,
      * if they test an entity which requires the current entity.
      */
-    public static Navire createEntity(EntityManager em) {
-        Navire navire = new Navire()
+    public static Navire createEntity() {
+        return new Navire()
             .nom(DEFAULT_NOM)
             .numeroImo(DEFAULT_NUMERO_IMO)
             .jaugeBrute(DEFAULT_JAUGE_BRUTE)
@@ -119,17 +103,6 @@ class NavireResourceIT {
             .tirant(DEFAULT_TIRANT)
             .pavillon(DEFAULT_PAVILLON)
             .actif(DEFAULT_ACTIF);
-        // Add required entity
-        Client client;
-        if (TestUtil.findAll(em, Client.class).isEmpty()) {
-            client = ClientResourceIT.createEntity();
-            em.persist(client);
-            em.flush();
-        } else {
-            client = TestUtil.findAll(em, Client.class).get(0);
-        }
-        navire.setClient(client);
-        return navire;
     }
 
     /**
@@ -138,8 +111,8 @@ class NavireResourceIT {
      * This is a static method, as tests for other entities might also need it,
      * if they test an entity which requires the current entity.
      */
-    public static Navire createUpdatedEntity(EntityManager em) {
-        Navire updatedNavire = new Navire()
+    public static Navire createUpdatedEntity() {
+        return new Navire()
             .nom(UPDATED_NOM)
             .numeroImo(UPDATED_NUMERO_IMO)
             .jaugeBrute(UPDATED_JAUGE_BRUTE)
@@ -148,22 +121,11 @@ class NavireResourceIT {
             .tirant(UPDATED_TIRANT)
             .pavillon(UPDATED_PAVILLON)
             .actif(UPDATED_ACTIF);
-        // Add required entity
-        Client client;
-        if (TestUtil.findAll(em, Client.class).isEmpty()) {
-            client = ClientResourceIT.createUpdatedEntity();
-            em.persist(client);
-            em.flush();
-        } else {
-            client = TestUtil.findAll(em, Client.class).get(0);
-        }
-        updatedNavire.setClient(client);
-        return updatedNavire;
     }
 
     @BeforeEach
     void initTest() {
-        navire = createEntity(em);
+        navire = createEntity();
     }
 
     @AfterEach
@@ -287,23 +249,6 @@ class NavireResourceIT {
             .andExpect(jsonPath("$.[*].tirant").value(hasItem(DEFAULT_TIRANT)))
             .andExpect(jsonPath("$.[*].pavillon").value(hasItem(DEFAULT_PAVILLON)))
             .andExpect(jsonPath("$.[*].actif").value(hasItem(DEFAULT_ACTIF)));
-    }
-
-    @SuppressWarnings({ "unchecked" })
-    void getAllNaviresWithEagerRelationshipsIsEnabled() throws Exception {
-        when(navireServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
-
-        restNavireMockMvc.perform(get(ENTITY_API_URL + "?eagerload=true")).andExpect(status().isOk());
-
-        verify(navireServiceMock, times(1)).findAllWithEagerRelationships(any());
-    }
-
-    @SuppressWarnings({ "unchecked" })
-    void getAllNaviresWithEagerRelationshipsIsNotEnabled() throws Exception {
-        when(navireServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
-
-        restNavireMockMvc.perform(get(ENTITY_API_URL + "?eagerload=false")).andExpect(status().isOk());
-        verify(navireRepositoryMock, times(1)).findAll(any(Pageable.class));
     }
 
     @Test
@@ -806,28 +751,6 @@ class NavireResourceIT {
         defaultNavireFiltering("actif.specified=true", "actif.specified=false");
     }
 
-    @Test
-    @Transactional
-    void getAllNaviresByClientIsEqualToSomething() throws Exception {
-        Client client;
-        if (TestUtil.findAll(em, Client.class).isEmpty()) {
-            navireRepository.saveAndFlush(navire);
-            client = ClientResourceIT.createEntity();
-        } else {
-            client = TestUtil.findAll(em, Client.class).get(0);
-        }
-        em.persist(client);
-        em.flush();
-        navire.setClient(client);
-        navireRepository.saveAndFlush(navire);
-        Long clientId = client.getId();
-        // Get all the navireList where client equals to clientId
-        defaultNavireShouldBeFound("clientId.equals=" + clientId);
-
-        // Get all the navireList where client equals to (clientId + 1)
-        defaultNavireShouldNotBeFound("clientId.equals=" + (clientId + 1));
-    }
-
     private void defaultNavireFiltering(String shouldBeFound, String shouldNotBeFound) throws Exception {
         defaultNavireShouldBeFound(shouldBeFound);
         defaultNavireShouldNotBeFound(shouldNotBeFound);
@@ -991,7 +914,7 @@ class NavireResourceIT {
         Navire partialUpdatedNavire = new Navire();
         partialUpdatedNavire.setId(navire.getId());
 
-        partialUpdatedNavire.nom(UPDATED_NOM).longueur(UPDATED_LONGUEUR).tirant(UPDATED_TIRANT).pavillon(UPDATED_PAVILLON);
+        partialUpdatedNavire.jaugeBrute(UPDATED_JAUGE_BRUTE).largeur(UPDATED_LARGEUR).pavillon(UPDATED_PAVILLON).actif(UPDATED_ACTIF);
 
         restNavireMockMvc
             .perform(

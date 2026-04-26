@@ -5,7 +5,7 @@
   "applications": "*",
   "clientRootFolder": "stnBackend",
   "databaseType": "sql",
-  "documentation": "Navire appartenant à un client",
+  "documentation": "Navire",
   "dto": "mapstruct",
   "fields": [
     {
@@ -60,17 +60,7 @@
   "microserviceName": "stnBackend",
   "name": "Navire",
   "pagination": "pagination",
-  "relationships": [
-    {
-      "otherEntityField": "nom",
-      "otherEntityName": "client",
-      "otherEntityRelationshipName": "navires",
-      "relationshipName": "client",
-      "relationshipSide": "right",
-      "relationshipType": "many-to-one",
-      "relationshipValidateRules": "required"
-    }
-  ],
+  "relationships": [],
   "searchEngine": "no",
   "service": "serviceImpl"
 }

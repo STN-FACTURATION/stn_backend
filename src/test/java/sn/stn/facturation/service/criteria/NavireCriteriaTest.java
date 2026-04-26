@@ -84,7 +84,6 @@ class NavireCriteriaTest {
         navireCriteria.tirant();
         navireCriteria.pavillon();
         navireCriteria.actif();
-        navireCriteria.clientId();
         navireCriteria.distinct();
     }
 
@@ -100,7 +99,6 @@ class NavireCriteriaTest {
                 condition.apply(criteria.getTirant()) &&
                 condition.apply(criteria.getPavillon()) &&
                 condition.apply(criteria.getActif()) &&
-                condition.apply(criteria.getClientId()) &&
                 condition.apply(criteria.getDistinct()),
             "every filter matches"
         );
@@ -118,7 +116,6 @@ class NavireCriteriaTest {
                 condition.apply(criteria.getTirant(), copy.getTirant()) &&
                 condition.apply(criteria.getPavillon(), copy.getPavillon()) &&
                 condition.apply(criteria.getActif(), copy.getActif()) &&
-                condition.apply(criteria.getClientId(), copy.getClientId()) &&
                 condition.apply(criteria.getDistinct(), copy.getDistinct()),
             "every filter matches"
         );

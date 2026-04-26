@@ -145,6 +145,9 @@ spring:
     basename: i18n/messages
   main:
     allow-bean-definition-overriding: true
+  docker:
+    compose:
+      enabled: false
   mvc:
     problemdetails:
       enabled: true

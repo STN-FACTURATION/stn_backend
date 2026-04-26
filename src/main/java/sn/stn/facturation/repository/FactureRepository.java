@@ -26,10 +26,7 @@ public interface FactureRepository extends JpaRepository<Facture, Long>, JpaSpec
         return this.findAllWithToOneRelationships(pageable);
     }
 
-    @Query(
-        value = "select facture from Facture facture left join fetch facture.navire left join fetch facture.client",
-        countQuery = "select count(facture) from Facture facture"
-    )
+    @Query(value = "select facture from Facture facture left join fetch facture.navire left join fetch facture.client", countQuery = "select count(facture) from Facture facture")
     Page<Facture> findAllWithToOneRelationships(Pageable pageable);
 
     @Query("select facture from Facture facture left join fetch facture.navire left join fetch facture.client")
@@ -37,4 +34,12 @@ public interface FactureRepository extends JpaRepository<Facture, Long>, JpaSpec
 
     @Query("select facture from Facture facture left join fetch facture.navire left join fetch facture.client where facture.id =:id")
     Optional<Facture> findOneWithToOneRelationships(@Param("id") Long id);
+
+    @Query("select facture from Facture facture " +
+            "left join fetch facture.navire " +
+            "left join fetch facture.client " +
+            "left join fetch facture.mouvements " +
+            "left join fetch facture.supplements " +
+            "where facture.id =:id")
+    Optional<Facture> findOneWithAllRelationships(@Param("id") Long id);
 }

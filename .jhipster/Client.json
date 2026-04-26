@@ -63,13 +63,6 @@
   "pagination": "pagination",
   "relationships": [
     {
-      "otherEntityName": "navire",
-      "otherEntityRelationshipName": "client",
-      "relationshipName": "navires",
-      "relationshipSide": "left",
-      "relationshipType": "one-to-many"
-    },
-    {
       "otherEntityName": "facture",
       "otherEntityRelationshipName": "client",
       "relationshipName": "factures",

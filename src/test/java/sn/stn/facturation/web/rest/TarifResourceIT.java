@@ -898,12 +898,7 @@ class TarifResourceIT {
         Tarif partialUpdatedTarif = new Tarif();
         partialUpdatedTarif.setId(tarif.getId());
 
-        partialUpdatedTarif
-            .trancheMin(UPDATED_TRANCHE_MIN)
-            .trancheMax(UPDATED_TRANCHE_MAX)
-            .prixEuro(UPDATED_PRIX_EURO)
-            .actif(UPDATED_ACTIF)
-            .description(UPDATED_DESCRIPTION);
+        partialUpdatedTarif.trancheMax(UPDATED_TRANCHE_MAX).prixEuro(UPDATED_PRIX_EURO).description(UPDATED_DESCRIPTION);
 
         restTarifMockMvc
             .perform(

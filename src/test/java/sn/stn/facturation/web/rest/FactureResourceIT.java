@@ -165,7 +165,7 @@ class FactureResourceIT {
         // Add required entity
         Navire navire;
         if (TestUtil.findAll(em, Navire.class).isEmpty()) {
-            navire = NavireResourceIT.createEntity(em);
+            navire = NavireResourceIT.createEntity();
             em.persist(navire);
             em.flush();
         } else {
@@ -212,7 +212,7 @@ class FactureResourceIT {
         // Add required entity
         Navire navire;
         if (TestUtil.findAll(em, Navire.class).isEmpty()) {
-            navire = NavireResourceIT.createUpdatedEntity(em);
+            navire = NavireResourceIT.createUpdatedEntity();
             em.persist(navire);
             em.flush();
         } else {
@@ -1604,7 +1604,7 @@ class FactureResourceIT {
         Navire navire;
         if (TestUtil.findAll(em, Navire.class).isEmpty()) {
             factureRepository.saveAndFlush(facture);
-            navire = NavireResourceIT.createEntity(em);
+            navire = NavireResourceIT.createEntity();
         } else {
             navire = TestUtil.findAll(em, Navire.class).get(0);
         }
@@ -1822,13 +1822,15 @@ class FactureResourceIT {
         partialUpdatedFacture.setId(facture.getId());
 
         partialUpdatedFacture
-            .numero(UPDATED_NUMERO)
-            .datePaiement(UPDATED_DATE_PAIEMENT)
-            .montantHt(UPDATED_MONTANT_HT)
-            .montantTva(UPDATED_MONTANT_TVA)
-            .devise(UPDATED_DEVISE)
+            .dateEmission(UPDATED_DATE_EMISSION)
+            .volumeM3(UPDATED_VOLUME_M_3)
+            .montantBaseHt(UPDATED_MONTANT_BASE_HT)
+            .tauxTva(UPDATED_TAUX_TVA)
             .tauxChangeCfa(UPDATED_TAUX_CHANGE_CFA)
-            .cheminPdf(UPDATED_CHEMIN_PDF);
+            .statut(UPDATED_STATUT)
+            .notes(UPDATED_NOTES)
+            .cheminPdf(UPDATED_CHEMIN_PDF)
+            .creeParLogin(UPDATED_CREE_PAR_LOGIN);
 
         restFactureMockMvc
             .perform(

@@ -1,8 +1,6 @@
 package sn.stn.facturation.service;
 
 import java.util.Optional;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import sn.stn.facturation.service.dto.NavireDTO;
 
 /**
@@ -32,14 +30,6 @@ public interface NavireService {
      * @return the persisted entity.
      */
     Optional<NavireDTO> partialUpdate(NavireDTO navireDTO);
-
-    /**
-     * Get all the navires with eager load of many-to-many relationships.
-     *
-     * @param pageable the pagination information.
-     * @return the list of entities.
-     */
-    Page<NavireDTO> findAllWithEagerRelationships(Pageable pageable);
 
     /**
      * Get the "id" navire.

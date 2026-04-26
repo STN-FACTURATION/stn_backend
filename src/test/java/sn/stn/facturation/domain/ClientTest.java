@@ -3,7 +3,6 @@ package sn.stn.facturation.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static sn.stn.facturation.domain.ClientTestSamples.*;
 import static sn.stn.facturation.domain.FactureTestSamples.*;
-import static sn.stn.facturation.domain.NavireTestSamples.*;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -24,28 +23,6 @@ class ClientTest {
 
         client2 = getClientSample2();
         assertThat(client1).isNotEqualTo(client2);
-    }
-
-    @Test
-    void naviresTest() {
-        Client client = getClientRandomSampleGenerator();
-        Navire navireBack = getNavireRandomSampleGenerator();
-
-        client.addNavires(navireBack);
-        assertThat(client.getNavires()).containsOnly(navireBack);
-        assertThat(navireBack.getClient()).isEqualTo(client);
-
-        client.removeNavires(navireBack);
-        assertThat(client.getNavires()).doesNotContain(navireBack);
-        assertThat(navireBack.getClient()).isNull();
-
-        client.navires(new HashSet<>(Set.of(navireBack)));
-        assertThat(client.getNavires()).containsOnly(navireBack);
-        assertThat(navireBack.getClient()).isEqualTo(client);
-
-        client.setNavires(new HashSet<>());
-        assertThat(client.getNavires()).doesNotContain(navireBack);
-        assertThat(navireBack.getClient()).isNull();
     }
 
     @Test

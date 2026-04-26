@@ -92,6 +92,7 @@ class FactureCriteriaTest {
         factureCriteria.notes();
         factureCriteria.cheminPdf();
         factureCriteria.creeParLogin();
+        factureCriteria.mouvementsId();
         factureCriteria.supplementsId();
         factureCriteria.navireId();
         factureCriteria.clientId();
@@ -118,6 +119,7 @@ class FactureCriteriaTest {
                 condition.apply(criteria.getNotes()) &&
                 condition.apply(criteria.getCheminPdf()) &&
                 condition.apply(criteria.getCreeParLogin()) &&
+                condition.apply(criteria.getMouvementsId()) &&
                 condition.apply(criteria.getSupplementsId()) &&
                 condition.apply(criteria.getNavireId()) &&
                 condition.apply(criteria.getClientId()) &&
@@ -146,6 +148,7 @@ class FactureCriteriaTest {
                 condition.apply(criteria.getNotes(), copy.getNotes()) &&
                 condition.apply(criteria.getCheminPdf(), copy.getCheminPdf()) &&
                 condition.apply(criteria.getCreeParLogin(), copy.getCreeParLogin()) &&
+                condition.apply(criteria.getMouvementsId(), copy.getMouvementsId()) &&
                 condition.apply(criteria.getSupplementsId(), copy.getSupplementsId()) &&
                 condition.apply(criteria.getNavireId(), copy.getNavireId()) &&
                 condition.apply(criteria.getClientId(), copy.getClientId()) &&

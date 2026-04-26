@@ -1,7 +1,6 @@
 package sn.stn.facturation.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static sn.stn.facturation.domain.ClientTestSamples.*;
 import static sn.stn.facturation.domain.NavireTestSamples.*;
 
 import org.junit.jupiter.api.Test;
@@ -21,17 +20,5 @@ class NavireTest {
 
         navire2 = getNavireSample2();
         assertThat(navire1).isNotEqualTo(navire2);
-    }
-
-    @Test
-    void clientTest() {
-        Navire navire = getNavireRandomSampleGenerator();
-        Client clientBack = getClientRandomSampleGenerator();
-
-        navire.setClient(clientBack);
-        assertThat(navire.getClient()).isEqualTo(clientBack);
-
-        navire.client(null);
-        assertThat(navire.getClient()).isNull();
     }
 }

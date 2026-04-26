@@ -90,6 +90,7 @@ public class FactureQueryService extends QueryService<Facture> {
                 buildStringSpecification(criteria.getNotes(), Facture_.notes),
                 buildStringSpecification(criteria.getCheminPdf(), Facture_.cheminPdf),
                 buildStringSpecification(criteria.getCreeParLogin(), Facture_.creeParLogin),
+                buildSpecification(criteria.getMouvementsId(), root -> root.join(Facture_.mouvements, JoinType.LEFT).get(Mouvement_.id)),
                 buildSpecification(criteria.getSupplementsId(), root ->
                     root.join(Facture_.supplements, JoinType.LEFT).get(LigneFactureSupplement_.id)
                 ),

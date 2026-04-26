@@ -780,7 +780,7 @@ class SupplementResourceIT {
         Supplement partialUpdatedSupplement = new Supplement();
         partialUpdatedSupplement.setId(supplement.getId());
 
-        partialUpdatedSupplement.code(UPDATED_CODE).montantFixe(UPDATED_MONTANT_FIXE);
+        partialUpdatedSupplement.code(UPDATED_CODE).libelle(UPDATED_LIBELLE).montantFixe(UPDATED_MONTANT_FIXE).actif(UPDATED_ACTIF);
 
         restSupplementMockMvc
             .perform(

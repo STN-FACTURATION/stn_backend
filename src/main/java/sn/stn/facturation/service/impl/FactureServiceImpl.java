@@ -14,7 +14,8 @@ import sn.stn.facturation.service.dto.FactureDTO;
 import sn.stn.facturation.service.mapper.FactureMapper;
 
 /**
- * Service Implementation for managing {@link sn.stn.facturation.domain.Facture}.
+ * Service Implementation for managing
+ * {@link sn.stn.facturation.domain.Facture}.
  */
 @Service
 @Transactional
@@ -26,25 +27,48 @@ public class FactureServiceImpl implements FactureService {
 
     private final FactureMapper factureMapper;
 
-    public FactureServiceImpl(FactureRepository factureRepository, FactureMapper factureMapper) {
+    private final sn.stn.facturation.repository.NavireRepository navireRepository;
+
+    private final sn.stn.facturation.service.BillingService billingService;
+
+    public FactureServiceImpl(
+            FactureRepository factureRepository,
+            FactureMapper factureMapper,
+            sn.stn.facturation.repository.NavireRepository navireRepository,
+            sn.stn.facturation.service.BillingService billingService) {
         this.factureRepository = factureRepository;
         this.factureMapper = factureMapper;
+        this.navireRepository = navireRepository;
+        this.billingService = billingService;
     }
 
     @Override
     public FactureDTO save(FactureDTO factureDTO) {
         LOG.debug("Request to save Facture : {}", factureDTO);
         Facture facture = factureMapper.toEntity(factureDTO);
-        facture = factureRepository.save(facture);
-        return factureMapper.toDto(facture);
+
+        if (facture.getId() == null && (facture.getNumero() == null || facture.getNumero().isBlank())) {
+            facture.setNumero("FACT-" + java.time.LocalDateTime.now()
+                    .format(java.time.format.DateTimeFormatter.ofPattern("yyyyMMddHHmmss")));
+        }
+
+        if (facture.getVolumeM3() == null && facture.getNavire() != null && facture.getNavire().getId() != null) {
+            final Facture f = facture;
+            navireRepository.findById(f.getNavire().getId()).ifPresent(navire -> f.setVolumeM3(navire.getJaugeBrute()));
+        }
+
+        billingService.recalculateTotals(facture);
+        Facture savedFacture = factureRepository.save(facture);
+        return factureMapper.toDto(savedFacture);
     }
 
     @Override
     public FactureDTO update(FactureDTO factureDTO) {
         LOG.debug("Request to update Facture : {}", factureDTO);
         Facture facture = factureMapper.toEntity(factureDTO);
-        facture = factureRepository.save(facture);
-        return factureMapper.toDto(facture);
+        billingService.recalculateTotals(facture);
+        Facture savedFacture = factureRepository.save(facture);
+        return factureMapper.toDto(savedFacture);
     }
 
     @Override
@@ -52,14 +76,14 @@ public class FactureServiceImpl implements FactureService {
         LOG.debug("Request to partially update Facture : {}", factureDTO);
 
         return factureRepository
-            .findById(factureDTO.getId())
-            .map(existingFacture -> {
-                factureMapper.partialUpdate(existingFacture, factureDTO);
-
-                return existingFacture;
-            })
-            .map(factureRepository::save)
-            .map(factureMapper::toDto);
+                .findById(factureDTO.getId())
+                .map(existingFacture -> {
+                    factureMapper.partialUpdate(existingFacture, factureDTO);
+                    billingService.recalculateTotals(existingFacture);
+                    return existingFacture;
+                })
+                .map(factureRepository::save)
+                .map(factureMapper::toDto);
     }
 
     public Page<FactureDTO> findAllWithEagerRelationships(Pageable pageable) {

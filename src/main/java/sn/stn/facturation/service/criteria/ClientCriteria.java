@@ -40,8 +40,6 @@ public class ClientCriteria implements Serializable, Criteria {
 
     private BooleanFilter actif;
 
-    private LongFilter naviresId;
-
     private LongFilter facturesId;
 
     private Boolean distinct;
@@ -58,7 +56,6 @@ public class ClientCriteria implements Serializable, Criteria {
         this.ville = other.optionalVille().map(StringFilter::copy).orElse(null);
         this.pays = other.optionalPays().map(StringFilter::copy).orElse(null);
         this.actif = other.optionalActif().map(BooleanFilter::copy).orElse(null);
-        this.naviresId = other.optionalNaviresId().map(LongFilter::copy).orElse(null);
         this.facturesId = other.optionalFacturesId().map(LongFilter::copy).orElse(null);
         this.distinct = other.distinct;
     }
@@ -239,25 +236,6 @@ public class ClientCriteria implements Serializable, Criteria {
         this.actif = actif;
     }
 
-    public LongFilter getNaviresId() {
-        return naviresId;
-    }
-
-    public Optional<LongFilter> optionalNaviresId() {
-        return Optional.ofNullable(naviresId);
-    }
-
-    public LongFilter naviresId() {
-        if (naviresId == null) {
-            setNaviresId(new LongFilter());
-        }
-        return naviresId;
-    }
-
-    public void setNaviresId(LongFilter naviresId) {
-        this.naviresId = naviresId;
-    }
-
     public LongFilter getFacturesId() {
         return facturesId;
     }
@@ -315,7 +293,6 @@ public class ClientCriteria implements Serializable, Criteria {
             Objects.equals(ville, that.ville) &&
             Objects.equals(pays, that.pays) &&
             Objects.equals(actif, that.actif) &&
-            Objects.equals(naviresId, that.naviresId) &&
             Objects.equals(facturesId, that.facturesId) &&
             Objects.equals(distinct, that.distinct)
         );
@@ -323,7 +300,7 @@ public class ClientCriteria implements Serializable, Criteria {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, numero, nom, adresse, email, telephone, ville, pays, actif, naviresId, facturesId, distinct);
+        return Objects.hash(id, numero, nom, adresse, email, telephone, ville, pays, actif, facturesId, distinct);
     }
 
     // prettier-ignore
@@ -339,7 +316,6 @@ public class ClientCriteria implements Serializable, Criteria {
             optionalVille().map(f -> "ville=" + f + ", ").orElse("") +
             optionalPays().map(f -> "pays=" + f + ", ").orElse("") +
             optionalActif().map(f -> "actif=" + f + ", ").orElse("") +
-            optionalNaviresId().map(f -> "naviresId=" + f + ", ").orElse("") +
             optionalFacturesId().map(f -> "facturesId=" + f + ", ").orElse("") +
             optionalDistinct().map(f -> "distinct=" + f + ", ").orElse("") +
         "}";

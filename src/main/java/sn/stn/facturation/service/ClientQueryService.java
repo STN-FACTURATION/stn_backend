@@ -82,7 +82,6 @@ public class ClientQueryService extends QueryService<Client> {
                 buildStringSpecification(criteria.getVille(), Client_.ville),
                 buildStringSpecification(criteria.getPays(), Client_.pays),
                 buildSpecification(criteria.getActif(), Client_.actif),
-                buildSpecification(criteria.getNaviresId(), root -> root.join(Client_.navires, JoinType.LEFT).get(Navire_.id)),
                 buildSpecification(criteria.getFacturesId(), root -> root.join(Client_.factures, JoinType.LEFT).get(Facture_.id))
             );
         }

@@ -803,7 +803,7 @@ class HistoriqueTarifResourceIT {
         HistoriqueTarif partialUpdatedHistoriqueTarif = new HistoriqueTarif();
         partialUpdatedHistoriqueTarif.setId(historiqueTarif.getId());
 
-        partialUpdatedHistoriqueTarif.ancienneValeur(UPDATED_ANCIENNE_VALEUR).commentaire(UPDATED_COMMENTAIRE);
+        partialUpdatedHistoriqueTarif.nouvelleValeur(UPDATED_NOUVELLE_VALEUR);
 
         restHistoriqueTarifMockMvc
             .perform(

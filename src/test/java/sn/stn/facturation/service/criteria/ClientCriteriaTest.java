@@ -84,7 +84,6 @@ class ClientCriteriaTest {
         clientCriteria.ville();
         clientCriteria.pays();
         clientCriteria.actif();
-        clientCriteria.naviresId();
         clientCriteria.facturesId();
         clientCriteria.distinct();
     }
@@ -101,7 +100,6 @@ class ClientCriteriaTest {
                 condition.apply(criteria.getVille()) &&
                 condition.apply(criteria.getPays()) &&
                 condition.apply(criteria.getActif()) &&
-                condition.apply(criteria.getNaviresId()) &&
                 condition.apply(criteria.getFacturesId()) &&
                 condition.apply(criteria.getDistinct()),
             "every filter matches"
@@ -120,7 +118,6 @@ class ClientCriteriaTest {
                 condition.apply(criteria.getVille(), copy.getVille()) &&
                 condition.apply(criteria.getPays(), copy.getPays()) &&
                 condition.apply(criteria.getActif(), copy.getActif()) &&
-                condition.apply(criteria.getNaviresId(), copy.getNaviresId()) &&
                 condition.apply(criteria.getFacturesId(), copy.getFacturesId()) &&
                 condition.apply(criteria.getDistinct(), copy.getDistinct()),
             "every filter matches"

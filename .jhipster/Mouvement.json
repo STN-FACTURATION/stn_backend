@@ -1,0 +1,72 @@
+{
+  "annotations": {
+    "changelogDate": "20260422152608"
+  },
+  "applications": "*",
+  "clientRootFolder": "stnBackend",
+  "databaseType": "sql",
+  "documentation": "Ligne d'opération / mouvement de remorquage",
+  "dto": "mapstruct",
+  "fields": [
+    {
+      "fieldName": "type",
+      "fieldType": "TypeOperation",
+      "fieldValidateRules": ["required"],
+      "fieldValues": "DEPLACEMENT_UNITAIRE,ACCOSTAGE,DEHALAGE,SORTIE,LARGAGE,AMARRAGE,MISE_A_DISPOSITION"
+    },
+    {
+      "fieldName": "posteA",
+      "fieldType": "String",
+      "fieldValidateRules": ["maxlength"],
+      "fieldValidateRulesMaxlength": "100"
+    },
+    {
+      "fieldName": "posteB",
+      "fieldType": "String",
+      "fieldValidateRules": ["maxlength"],
+      "fieldValidateRulesMaxlength": "100"
+    },
+    {
+      "fieldName": "duree",
+      "fieldType": "Double",
+      "fieldValidateRules": ["min"],
+      "fieldValidateRulesMin": "0"
+    },
+    {
+      "fieldName": "montantCalcule",
+      "fieldType": "Double",
+      "fieldValidateRules": ["required", "min"],
+      "fieldValidateRulesMin": "0"
+    },
+    {
+      "fieldName": "libelle",
+      "fieldType": "String",
+      "fieldValidateRules": ["maxlength"],
+      "fieldValidateRulesMaxlength": "500"
+    }
+  ],
+  "jpaMetamodelFiltering": true,
+  "microserviceName": "stnBackend",
+  "name": "Mouvement",
+  "pagination": "pagination",
+  "relationships": [
+    {
+      "otherEntityField": "nom",
+      "otherEntityName": "remorqueur",
+      "relationshipName": "remorqueur",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-one"
+    },
+    {
+      "otherEntityField": "numero",
+      "otherEntityName": "facture",
+      "otherEntityRelationshipName": "mouvements",
+      "relationshipName": "facture",
+      "relationshipSide": "right",
+      "relationshipType": "many-to-one",
+      "relationshipValidateRules": "required"
+    }
+  ],
+  "searchEngine": "no",
+  "service": "serviceImpl"
+}

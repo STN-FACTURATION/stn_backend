@@ -62,12 +62,7 @@ public class Client implements Serializable {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "client")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    @JsonIgnoreProperties(value = { "client" }, allowSetters = true)
-    private Set<Navire> navires = new HashSet<>();
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "client")
-    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    @JsonIgnoreProperties(value = { "supplements", "navire", "client" }, allowSetters = true)
+    @JsonIgnoreProperties(value = { "mouvements", "supplements", "navire", "client" }, allowSetters = true)
     private Set<Facture> factures = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
@@ -187,37 +182,6 @@ public class Client implements Serializable {
 
     public void setActif(Boolean actif) {
         this.actif = actif;
-    }
-
-    public Set<Navire> getNavires() {
-        return this.navires;
-    }
-
-    public void setNavires(Set<Navire> navires) {
-        if (this.navires != null) {
-            this.navires.forEach(i -> i.setClient(null));
-        }
-        if (navires != null) {
-            navires.forEach(i -> i.setClient(this));
-        }
-        this.navires = navires;
-    }
-
-    public Client navires(Set<Navire> navires) {
-        this.setNavires(navires);
-        return this;
-    }
-
-    public Client addNavires(Navire navire) {
-        this.navires.add(navire);
-        navire.setClient(this);
-        return this;
-    }
-
-    public Client removeNavires(Navire navire) {
-        this.navires.remove(navire);
-        navire.setClient(null);
-        return this;
     }
 
     public Set<Facture> getFactures() {

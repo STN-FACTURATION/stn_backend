@@ -111,6 +111,13 @@
   "pagination": "pagination",
   "relationships": [
     {
+      "otherEntityName": "mouvement",
+      "otherEntityRelationshipName": "facture",
+      "relationshipName": "mouvements",
+      "relationshipSide": "left",
+      "relationshipType": "one-to-many"
+    },
+    {
       "otherEntityName": "ligneFactureSupplement",
       "otherEntityRelationshipName": "facture",
       "relationshipName": "supplements",

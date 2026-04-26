@@ -37,6 +37,16 @@ enum DeviseFacture {
     XOF
 }
 
+enum TypeOperation {
+    DEPLACEMENT_UNITAIRE,
+    ACCOSTAGE,
+    DEHALAGE,
+    SORTIE,
+    LARGAGE,
+    AMARRAGE,
+    MISE_A_DISPOSITION
+}
+
 // ─────────────────────────────────────────────
 // ENTITIES
 // ─────────────────────────────────────────────
@@ -54,7 +64,7 @@ entity Client {
     actif       Boolean         required
 }
 
-/** Navire appartenant à un client */
+/** Navire */
 entity Navire {
     nom             String      required maxlength(200)
     numeroImo       String      maxlength(20)
@@ -64,6 +74,14 @@ entity Navire {
     tirant          Double      min(0)
     pavillon        String      maxlength(100)
     actif           Boolean     required
+}
+
+/** Remorqueur STN */
+entity Remorqueur {
+    code            String      required unique maxlength(20)
+    nom             String      required maxlength(100)
+    statut          String      maxlength(50)
+    observation     String      maxlength(500)
 }
 
 /** Tranche tarifaire du barème Port de Dakar */
@@ -108,6 +126,16 @@ entity Facture {
 
 }
 
+/** Ligne d'opération / mouvement de remorquage */
+entity Mouvement {
+    type            TypeOperation   required
+    posteA          String          maxlength(100)
+    posteB          String          maxlength(100)
+    duree           Double          min(0)
+    montantCalcule  Double          required min(0)
+    libelle         String          maxlength(500)
+}
+
 /** Ligne de supplément appliqué à une facture */
 entity LigneFactureSupplement {
     montantCalcule      Double          required min(0)
@@ -127,11 +155,6 @@ entity HistoriqueTarif {
 // RELATIONSHIPS
 // ─────────────────────────────────────────────
 
-/** Un client possède plusieurs navires */
-relationship OneToMany {
-    Client{navires} to Navire{client(nom) required}
-}
-
 /** Un client reçoit plusieurs factures */
 relationship OneToMany {
     Client{factures} to Facture{client(nom) required}
@@ -142,6 +165,15 @@ relationship ManyToOne {
     Facture{navire(nom) required} to Navire
 }
 
+/** Une facture contient plusieurs lignes d'opérations */
+relationship OneToMany {
+    Facture{mouvements} to Mouvement{facture(numero) required}
+}
+
+/** Un mouvement peut être exécuté par un remorqueur */
+relationship ManyToOne {
+    Mouvement{remorqueur(nom)} to Remorqueur
+}
 
 /** Un tarif a un historique de modifications */
 relationship OneToMany {
@@ -158,6 +190,7 @@ relationship OneToMany {
 relationship ManyToOne {
     LigneFactureSupplement{supplement(libelle) required} to Supplement
 }
+
 
 // ─────────────────────────────────────────────
 // OPTIONS DE GÉNÉRATION

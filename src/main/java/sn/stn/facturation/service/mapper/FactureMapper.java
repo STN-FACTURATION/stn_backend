@@ -11,11 +11,13 @@ import sn.stn.facturation.service.dto.NavireDTO;
 /**
  * Mapper for the entity {@link Facture} and its DTO {@link FactureDTO}.
  */
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = { MouvementMapper.class })
 public interface FactureMapper extends EntityMapper<FactureDTO, Facture> {
-    @Mapping(target = "navire", source = "navire", qualifiedByName = "navireNom")
-    @Mapping(target = "client", source = "client", qualifiedByName = "clientNom")
+    @Mapping(target = "mouvements", source = "mouvements")
     FactureDTO toDto(Facture s);
+
+    @Mapping(target = "mouvements", source = "mouvements")
+    Facture toEntity(FactureDTO s);
 
     @Named("navireNom")
     @BeanMapping(ignoreByDefault = true)

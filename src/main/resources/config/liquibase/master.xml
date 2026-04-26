@@ -19,11 +19,14 @@
     <include file="config/liquibase/changelog/20260318092923_added_entity_Facture.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20260318092924_added_entity_LigneFactureSupplement.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20260318092925_added_entity_HistoriqueTarif.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20260422152607_added_entity_Remorqueur.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20260422152608_added_entity_Mouvement.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->
-    <include file="config/liquibase/changelog/20260318092920_added_entity_constraints_Navire.xml" relativeToChangelogFile="false"/>
+<!--    <include file="config/liquibase/changelog/20260318092920_added_entity_constraints_Navire.xml" relativeToChangelogFile="false"/>-->
     <include file="config/liquibase/changelog/20260318092923_added_entity_constraints_Facture.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20260318092924_added_entity_constraints_LigneFactureSupplement.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20260318092925_added_entity_constraints_HistoriqueTarif.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20260422152608_added_entity_constraints_Mouvement.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
     <!-- jhipster-needle-liquibase-add-incremental-changelog - JHipster will add incremental liquibase changelogs here -->
 </databaseChangeLog>

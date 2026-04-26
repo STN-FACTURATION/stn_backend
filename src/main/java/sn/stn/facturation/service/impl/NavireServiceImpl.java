@@ -3,8 +3,6 @@ package sn.stn.facturation.service.impl;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sn.stn.facturation.domain.Navire;
@@ -62,15 +60,11 @@ public class NavireServiceImpl implements NavireService {
             .map(navireMapper::toDto);
     }
 
-    public Page<NavireDTO> findAllWithEagerRelationships(Pageable pageable) {
-        return navireRepository.findAllWithEagerRelationships(pageable).map(navireMapper::toDto);
-    }
-
     @Override
     @Transactional(readOnly = true)
     public Optional<NavireDTO> findOne(Long id) {
         LOG.debug("Request to get Navire : {}", id);
-        return navireRepository.findOneWithEagerRelationships(id).map(navireMapper::toDto);
+        return navireRepository.findById(id).map(navireMapper::toDto);
     }
 
     @Override

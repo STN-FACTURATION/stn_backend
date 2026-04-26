@@ -8,7 +8,7 @@ import java.util.Objects;
 /**
  * A DTO for the {@link sn.stn.facturation.domain.Navire} entity.
  */
-@Schema(description = "Navire appartenant à un client")
+@Schema(description = "Navire")
 @SuppressWarnings("common-java:DuplicatedBlocks")
 public class NavireDTO implements Serializable {
 
@@ -39,9 +39,6 @@ public class NavireDTO implements Serializable {
 
     @NotNull
     private Boolean actif;
-
-    @NotNull
-    private ClientDTO client;
 
     public Long getId() {
         return id;
@@ -115,14 +112,6 @@ public class NavireDTO implements Serializable {
         this.actif = actif;
     }
 
-    public ClientDTO getClient() {
-        return client;
-    }
-
-    public void setClient(ClientDTO client) {
-        this.client = client;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -157,7 +146,6 @@ public class NavireDTO implements Serializable {
             ", tirant=" + getTirant() +
             ", pavillon='" + getPavillon() + "'" +
             ", actif='" + getActif() + "'" +
-            ", client=" + getClient() +
             "}";
     }
 }
