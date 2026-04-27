@@ -40,7 +40,7 @@ public class BillingService {
             return 0.0;
         }
 
-        double baseTarif = tarifOpt.get().getPrixEuro();
+        double baseTarif = tarifOpt.orElseThrow().getPrixEuro();
 
         switch (mouvement.getType()) {
             case DEPLACEMENT_UNITAIRE:
@@ -123,7 +123,7 @@ public class BillingService {
         if (facture.getNavire() != null && facture.getNavire().getJaugeBrute() != null) {
             Optional<Tarif> tarifOpt = tarifRepository.findActiveTarifForVolume(facture.getNavire().getJaugeBrute());
             if (tarifOpt.isPresent()) {
-                baseTarif = tarifOpt.get().getPrixEuro();
+                baseTarif = tarifOpt.orElseThrow().getPrixEuro();
             }
         }
 
