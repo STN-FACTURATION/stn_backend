@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.*;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import sn.stn.facturation.domain.Facture;
+import sn.stn.facturation.repository.projection.*;
 
 /**
  * Spring Data JPA repository for the Facture entity.
@@ -42,4 +43,32 @@ public interface FactureRepository extends JpaRepository<Facture, Long>, JpaSpec
             "left join fetch facture.supplements " +
             "where facture.id =:id")
     Optional<Facture> findOneWithAllRelationships(@Param("id") Long id);
+
+    @Query(value = "SELECT " +
+            "SUM(IF(date_emission >= :startOfMonth, montant_ttc, 0)) as billedThisMonth, " +
+            "SUM(IF(date_emission >= :startOfMonth AND statut = 'PAYEE', montant_ttc, 0)) as paidThisMonth, " +
+            "SUM(IF(date_emission >= :startOfMonth, volume_m_3, 0)) as totalVolume, " +
+            "SUM(IF(date_emission >= :startOfLastMonth AND date_emission < :startOfMonth, montant_ttc, 0)) as billedLastMonth " +
+            "FROM facture", nativeQuery = true)
+    Optional<GeneralStatsProjection> getGeneralStats(@Param("startOfMonth") java.time.Instant startOfMonth, @Param("startOfLastMonth") java.time.Instant startOfLastMonth);
+
+    @Query(value = "SELECT c.nom as nom, SUM(f.montant_ttc) as total, COUNT(f.id) as count " +
+            "FROM facture f JOIN client c ON f.client_id = c.id " +
+            "WHERE f.date_emission >= :sixMonthsAgo " +
+            "GROUP BY c.id, c.nom " +
+            "ORDER BY total DESC LIMIT 5", nativeQuery = true)
+    List<TopClientProjection> getTopClients(@Param("sixMonthsAgo") java.time.Instant sixMonthsAgo);
+
+    @Query(value = "SELECT DATE_FORMAT(date_emission, '%m/%Y') as month, " +
+            "SUM(montant_ttc) as billed, " +
+            "SUM(IF(statut = 'PAYEE', montant_ttc, 0)) as paid, " +
+            "COUNT(id) as count " +
+            "FROM facture " +
+            "WHERE date_emission >= :sixMonthsAgo " +
+            "GROUP BY month " +
+            "ORDER BY MIN(date_emission) ASC", nativeQuery = true)
+    List<MonthlyEvolutionProjection> getMonthlyEvolution(@Param("sixMonthsAgo") java.time.Instant sixMonthsAgo);
+
+    @Query(value = "SELECT SUM(montant_ttc) as totalBilled, SUM(IF(statut = 'PAYEE', montant_ttc, 0)) as totalPaid FROM facture WHERE date_emission >= :sixMonthsAgo", nativeQuery = true)
+    Optional<RecoveryTotalsProjection> getRecoveryTotals(@Param("sixMonthsAgo") java.time.Instant sixMonthsAgo);
 }

@@ -23,6 +23,7 @@ import sn.stn.facturation.service.FactureService;
 import sn.stn.facturation.service.criteria.FactureCriteria;
 import sn.stn.facturation.service.dto.FactureDTO;
 import sn.stn.facturation.web.rest.errors.BadRequestAlertException;
+import sn.stn.facturation.repository.projection.*;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.PaginationUtil;
 import tech.jhipster.web.util.ResponseUtil;
@@ -217,6 +218,59 @@ public class FactureResource {
         LOG.debug("REST request to get Facture : {}", id);
         Optional<FactureDTO> factureDTO = factureService.findOne(id);
         return ResponseUtil.wrapOrNotFound(factureDTO);
+    }
+
+    /**
+     * {@code GET  /factures/stats} : get dashboard statistics.
+     *
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the stats in body.
+     */
+    @GetMapping("/stats")
+    public ResponseEntity<sn.stn.facturation.service.dto.DashboardStatsDTO> getDashboardStats() {
+        LOG.debug("REST request to get dashboard statistics");
+
+        java.time.ZonedDateTime now = java.time.ZonedDateTime.now();
+        java.time.Instant startOfMonth = now.with(java.time.temporal.TemporalAdjusters.firstDayOfMonth()).truncatedTo(java.time.temporal.ChronoUnit.DAYS).toInstant();
+        java.time.Instant startOfLastMonth = now.minusMonths(1).with(java.time.temporal.TemporalAdjusters.firstDayOfMonth()).truncatedTo(java.time.temporal.ChronoUnit.DAYS).toInstant();
+        java.time.Instant sixMonthsAgo = now.minusMonths(5).with(java.time.temporal.TemporalAdjusters.firstDayOfMonth()).truncatedTo(java.time.temporal.ChronoUnit.DAYS).toInstant();
+
+        sn.stn.facturation.service.dto.DashboardStatsDTO stats = new sn.stn.facturation.service.dto.DashboardStatsDTO();
+
+        // 1. General Stats
+        factureRepository.getGeneralStats(startOfMonth, startOfLastMonth).ifPresent(p -> {
+            stats.setBilledThisMonth(p.getBilledThisMonth() != null ? p.getBilledThisMonth() : 0.0);
+            stats.setPaidThisMonth(p.getPaidThisMonth() != null ? p.getPaidThisMonth() : 0.0);
+            stats.setTotalVolume(p.getTotalVolume() != null ? p.getTotalVolume() : 0.0);
+            stats.setBilledLastMonth(p.getBilledLastMonth() != null ? p.getBilledLastMonth() : 0.0);
+        });
+
+        // 2. Recovery Rate
+        factureRepository.getRecoveryTotals(sixMonthsAgo).ifPresent(p -> {
+            double billedTotal = p.getTotalBilled() != null ? p.getTotalBilled() : 0.0;
+            double paidTotal = p.getTotalPaid() != null ? p.getTotalPaid() : 0.0;
+            stats.setRecoveryRate(billedTotal > 0 ? (paidTotal / billedTotal) * 100 : 0.0);
+        });
+
+        // 3. Top Clients
+        List<sn.stn.facturation.service.dto.DashboardStatsDTO.ClientStat> topClients = factureRepository.getTopClients(sixMonthsAgo).stream()
+                .map(p -> new sn.stn.facturation.service.dto.DashboardStatsDTO.ClientStat(
+                        p.getNom(),
+                        p.getTotal() != null ? p.getTotal() : 0.0,
+                        p.getCount() != null ? p.getCount() : 0L))
+                .collect(java.util.stream.Collectors.toList());
+        stats.setTopClients(topClients);
+
+        // 4. Monthly Evolution
+        List<sn.stn.facturation.service.dto.DashboardStatsDTO.MonthlyStat> evolution = factureRepository.getMonthlyEvolution(sixMonthsAgo).stream()
+                .map(p -> new sn.stn.facturation.service.dto.DashboardStatsDTO.MonthlyStat(
+                        p.getMonth(),
+                        p.getBilled() != null ? p.getBilled() : 0.0,
+                        p.getPaid() != null ? p.getPaid() : 0.0,
+                        p.getCount() != null ? p.getCount() : 0L))
+                .collect(java.util.stream.Collectors.toList());
+        stats.setMonthlyEvolution(evolution);
+
+        return ResponseEntity.ok().body(stats);
     }
 
     /**
